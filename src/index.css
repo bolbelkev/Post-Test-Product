@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: 'Archivo', sans-serif;
+  --font-sans: 'Quicksand', sans-serif;
+  --color-brand-maroon: #BD214C;
+  --color-brand-orange: #EA5543;
+  --color-brand-cream: #F9EDDE;
+  --color-brand-pink: #E8195E;
+  --color-brand-dark-orange: #EF5A34;
+  --color-brand-teal: #14A98B;
+  --color-brand-purple: #4A3467;
+  --color-brand-dark: #231F20;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #FFFFFF;
+  color: #231F20;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+}

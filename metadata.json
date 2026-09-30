@@ -1,0 +1,6 @@
+{
+  "name": "Post Test Free Mini Class - Boleh Belajar",
+  "description": "Post test interaktif Fundamental Performance Marketing Boleh Belajar untuk penerbitan sertifikat dan tes kesiapan ke Bootcamp Performance Marketing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
