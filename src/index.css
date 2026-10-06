@@ -19,6 +19,35 @@ body {
   color: #231F20;
 }
 
+@keyframes recap-progress-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.recap-progress {
+  animation: recap-progress-fill 1600ms linear forwards;
+}
+
 h1, h2, h3, h4, h5, h6, .font-heading {
   font-family: var(--font-heading);
+}
+
+.feedback-rating { appearance: none; background: transparent; }
+.feedback-rating::-webkit-slider-runnable-track { height: 4px; background: transparent; }
+.feedback-rating::-moz-range-track { height: 4px; background: transparent; }
+.feedback-rating::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; margin-top: -6px; opacity: 0; }
+.feedback-rating::-moz-range-thumb { width: 16px; height: 16px; border: 0; opacity: 0; }
+.rating-thumb { transform: translateX(-50%); transition: left 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+.rating-fill { transition: width 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .rating-thumb, .rating-fill { transition: none; }
+}
+
+@keyframes email-saved-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.email-saved-rise { animation: email-saved-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .email-saved-rise { animation: none; }
 }

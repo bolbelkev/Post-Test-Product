@@ -30,7 +30,7 @@ export const RecapIntro: React.FC<RecapIntroProps> = ({ onStart }) => {
         onClick={onStart}
         className="w-full py-3 px-5 rounded-xl bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/25 active:scale-[0.99] transition-all cursor-pointer"
       >
-        <span>Mulai Soal 1</span>
+        <span>Mulai recap materi</span>
         <ArrowRight className="w-4 h-4" />
       </button>
     </div>

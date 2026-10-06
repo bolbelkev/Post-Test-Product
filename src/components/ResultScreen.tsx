@@ -18,12 +18,14 @@ import bootcampHeroImg from '../assets/images/bootcamp_preview_hero_179075168909
 
 interface ResultScreenProps {
   submission: SubmissionRecord;
+  certificateForm?: React.ReactNode;
   onCtaClick: () => void;
   onRetake: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   submission,
+  certificateForm,
   onCtaClick,
   onRetake,
 }) => {
@@ -163,12 +165,12 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       </div>
 
       {/* 5. Info Sertifikat */}
-      <div className="rounded-xl border border-[#F9EDDE] bg-[#F9EDDE]/40 p-2.5 flex items-center gap-2.5 text-xs">
+      {certificateForm || <div className="rounded-xl border border-[#F9EDDE] bg-[#F9EDDE]/40 p-2.5 flex items-center gap-2.5 text-xs">
         <Mail className="w-4 h-4 text-[#BD214C] shrink-0" />
         <div className="text-[11px] text-gray-600 leading-tight">
-          Sertifikat akan dikirim ke email kamu dalam <span className="font-semibold text-[#BD214C]">3 hari kerja</span> ({submission.user.email}).
+          Sertifikat akan dikirim ke email kamu dalam <span className="font-semibold text-[#BD214C]">1–3 hari kerja</span> ({submission.user.email}).
         </div>
-      </div>
+      </div>}
 
       {/* 6. Footer actions */}
       <div className="text-center pt-1">

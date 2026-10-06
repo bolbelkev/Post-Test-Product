@@ -34,7 +34,7 @@ export const RecapProcessing: React.FC<RecapProcessingProps> = ({ onComplete }) 
 
       {/* Micro progress bar */}
       <div className="w-40 h-1 bg-[#F9EDDE] rounded-full overflow-hidden mt-4">
-        <div className="h-full bg-[#BD214C] rounded-full animate-pulse w-full" />
+        <div className="h-full bg-[#BD214C] rounded-full w-full origin-left recap-progress" />
       </div>
     </div>
   );

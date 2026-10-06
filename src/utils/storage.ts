@@ -174,6 +174,7 @@ export function saveSubmission(
     trackFunnelStep('submittedForm');
   } catch (err) {
     console.error('Failed to save submission:', err);
+    throw err;
   }
   return newRecord;
 }

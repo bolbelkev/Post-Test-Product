@@ -13,7 +13,6 @@ import { InterstitialAlumni } from './components/InterstitialAlumni.tsx';
 import { ProcessingScreen } from './components/ProcessingScreen.tsx';
 import { LeadForm } from './components/LeadForm.tsx';
 import { ResultScreen } from './components/ResultScreen.tsx';
-import { PrivacyModal } from './components/PrivacyModal.tsx';
 import { RecapIntro } from './components/RecapIntro.tsx';
 import { RecapProcessing } from './components/RecapProcessing.tsx';
 import { RecapMiniResult } from './components/RecapMiniResult.tsx';
@@ -79,7 +78,6 @@ type StepId =
   | 'p3_q4'
   // Part 5 (formerly Part 4): Processing, Data Diri, Hasil
   | 'processing'
-  | 'lead_form'
   | 'result';
 
 export default function App() {
@@ -88,14 +86,13 @@ export default function App() {
   const [certificateName, setCertificateName] = useState('');
   const [history, setHistory] = useState<StepId[]>([]);
   const [answers, setAnswers] = useState<QuizAnswers>({
-    feedback: { clarity: 4, expectations: 4, interaction: 4 },
+    feedback: {},
   });
   const [recapAnswers, setRecapAnswers] = useState<Record<number, string>>({});
   const [recapCorrectCount, setRecapCorrectCount] = useState<number>(0);
   const [currentSubmission, setCurrentSubmission] = useState<SubmissionRecord | null>(null);
 
   // Privacy Modal
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionRecord[]>([]);
   const [funnel, setFunnel] = useState<FunnelTracking>(getFunnelStats());
 
@@ -330,7 +327,16 @@ export default function App() {
   const handleProcessingComplete = () => {
     trackFunnelStep('reachedLeadForm');
     refreshData();
-    goToStep('lead_form', false);
+    const { score } = calculateMatchScore(answers);
+    setCurrentSubmission({
+      id: 'preview', timestamp: new Date().toISOString(),
+      user: { namaLengkap: certificateName.trim(), email: '', nomorHp: '', consent: false },
+      answers, skor: score,
+      goalNarrative: getGoalNarrative(answers.p1_goal, score),
+      hambatanRingkasan: getHambatanText(answers.p3_kendala_terbesar),
+      clickedCtaBootcamp: false,
+    });
+    goToStep('result', false);
   };
 
   // Form submission
@@ -347,21 +353,25 @@ export default function App() {
       hambatanRingkasan
     );
 
+    if (currentSubmission?.clickedCtaBootcamp) {
+      markCtaClicked(record.id);
+      record.clickedCtaBootcamp = true;
+    }
     setCurrentSubmission(record);
     refreshData();
-    goToStep('result', false);
   };
 
   const handleCtaClick = () => {
     if (currentSubmission) {
-      markCtaClicked(currentSubmission.id);
+      if (currentSubmission.id !== 'preview') markCtaClicked(currentSubmission.id);
+      setCurrentSubmission((prev) => prev ? { ...prev, clickedCtaBootcamp: true } : prev);
       refreshData();
     }
   };
 
   const handleRetake = () => {
     setGoalOther(false);
-    setAnswers({ feedback: { clarity: 4, expectations: 4, interaction: 4 } });
+    setAnswers({ feedback: {} });
     setRecapAnswers({});
     setRecapCorrectCount(0);
     setCurrentSubmission(null);
@@ -439,8 +449,6 @@ export default function App() {
         return { currentPart: 4, stepInPart: 4, totalInPart: 4 };
 
       // Part 5: Form Data Diri
-      case 'lead_form':
-        return { currentPart: 5, stepInPart: 1, totalInPart: 1 };
       default:
         return { currentPart: 1, stepInPart: 0, totalInPart: 5 };
     }
@@ -537,7 +545,7 @@ export default function App() {
             <div className="mb-3">
               <label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
               <input id="certificate-name" type="text" autoComplete="name" maxLength={150} value={certificateName} onChange={(event) => setCertificateName(event.target.value)} placeholder="Tulis nama yang ingin tercetak di sertifikat" className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs focus:outline-none focus:border-[#BD214C]" aria-describedby="certificate-name-help" />
-              <p id="certificate-name-help" className="text-[10px] text-gray-500 mt-1">Isi minimal 3 karakter. Kamu bisa mengoreksinya sebelum mengirim data.</p>
+              <p id="certificate-name-help" className="text-[10px] text-gray-500 mt-1">Isi minimal 3 karakter sesuai nama yang ingin tercetak di sertifikat.</p>
             </div>
             {/* Start Button */}
             <button
@@ -706,7 +714,7 @@ export default function App() {
           <QuestionCard
             questionNumber={1}
             totalInPart={5}
-            questionText="Kamu setuju performance marketing jadi skill utama yang dibutuhkan bisnis saat ini?"
+            questionText="Kamu setuju, performance marketing jadi salah satu skill utama yang dibutuhkan bisnis saat ini?"
             options={['Setuju', 'Tidak setuju']}
             selectedValues={answers.p2_skill_utama ? [answers.p2_skill_utama] : []}
             onSelect={(val) => handleSelectP2Q1(val as 'Setuju' | 'Tidak setuju')}
@@ -905,30 +913,18 @@ export default function App() {
           <ProcessingScreen onComplete={handleProcessingComplete} />
         )}
 
-        {/* Part 4 (b) Form Data Diri */}
-        {currentStep === 'lead_form' && (
-          <LeadForm
-            initialName={certificateName.trim()}
-            onSubmit={handleLeadFormSubmit}
-            onOpenPrivacy={() => setIsPrivacyOpen(true)}
-          />
-        )}
-
         {/* Part 4 (c) Result Screen */}
         {currentStep === 'result' && currentSubmission && (
           <ResultScreen
             submission={currentSubmission}
+            certificateForm={(
+              <LeadForm initialName={certificateName.trim()} onSubmit={handleLeadFormSubmit} saved={currentSubmission.id !== 'preview'} />
+            )}
             onCtaClick={handleCtaClick}
             onRetake={handleRetake}
           />
         )}
       </main>
-
-      {/* Privacy Policy Modal */}
-      <PrivacyModal
-        isOpen={isPrivacyOpen}
-        onClose={() => setIsPrivacyOpen(false)}
-      />
 
       {/* Mobile Footer branding - shown on welcome & result only */}
       {(currentStep === 'welcome' || currentStep === 'result') && (
