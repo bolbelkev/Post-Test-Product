@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ArrowRight, BookOpen, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface RecapIntroProps {
   onStart: () => void;
@@ -24,21 +24,6 @@ export const RecapIntro: React.FC<RecapIntroProps> = ({ onStart }) => {
       <p className="text-xs text-gray-500 mb-4 max-w-xs mx-auto leading-relaxed">
         Uji seberapa dalam pemahaman materi kamu lewat 10 pertanyaan pilihan ganda singkat.
       </p>
-
-      <div className="bg-[#F9EDDE]/30 border border-[#F9EDDE] rounded-2xl p-3.5 mb-5 text-left space-y-2 text-xs text-gray-700">
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[#BD214C] shrink-0" />
-          <span>10 soal pilihan ganda dari sesi materi</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[#BD214C] shrink-0" />
-          <span>Satu pertanyaan per layar, santai dan cepat</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[#BD214C] shrink-0" />
-          <span>Hasil evaluasi pemahaman langsung di akhir</span>
-        </div>
-      </div>
 
       <button
         type="button"

@@ -10,7 +10,6 @@ import { ProgressBar } from './components/ProgressBar.tsx';
 import { QuestionCard } from './components/QuestionCard.tsx';
 import { Part1Confirmation } from './components/Part1Confirmation.tsx';
 import { InterstitialAlumni } from './components/InterstitialAlumni.tsx';
-import { InterstitialTestimonial } from './components/InterstitialTestimonial.tsx';
 import { ProcessingScreen } from './components/ProcessingScreen.tsx';
 import { LeadForm } from './components/LeadForm.tsx';
 import { ResultScreen } from './components/ResultScreen.tsx';
@@ -78,7 +77,6 @@ type StepId =
   | 'p3_q2'
   | 'p3_q3'
   | 'p3_q4'
-  | 'p3_interstitial'
   // Part 5 (formerly Part 4): Processing, Data Diri, Hasil
   | 'processing'
   | 'lead_form'
@@ -86,8 +84,12 @@ type StepId =
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<StepId>('welcome');
+  const [goalOther, setGoalOther] = useState(false);
+  const [certificateName, setCertificateName] = useState('');
   const [history, setHistory] = useState<StepId[]>([]);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+  const [answers, setAnswers] = useState<QuizAnswers>({
+    feedback: { clarity: 4, expectations: 4, interaction: 4 },
+  });
   const [recapAnswers, setRecapAnswers] = useState<Record<number, string>>({});
   const [recapCorrectCount, setRecapCorrectCount] = useState<number>(0);
   const [currentSubmission, setCurrentSubmission] = useState<SubmissionRecord | null>(null);
@@ -139,9 +141,10 @@ export default function App() {
 
   // Start Quiz
   const handleStart = () => {
+    if (certificateName.trim().length < 3) return;
     trackFunnelStep('totalStarted');
     refreshData();
-    goToStep('feedback_ratings');
+    goToStep('p1_q1');
   };
 
   // Part 1 selection handlers
@@ -177,9 +180,7 @@ export default function App() {
 
   // Part 1 Confirm handlers
   const handleConfirmPart1 = () => {
-    trackFunnelStep('startedPart2');
-    refreshData();
-    goToStep('recap_intro');
+    goToStep('feedback_ratings');
   };
 
   const handleEditPart1 = (questionIndex?: number) => {
@@ -321,15 +322,9 @@ export default function App() {
       | 'Semuanya di atas'
   ) => {
     setAnswers((prev) => ({ ...prev, p3_kendala_terbesar: val }));
-    trackFunnelStep('reachedPart3Interstitial');
-    refreshData();
-    setTimeout(() => goToStep('p3_interstitial'), 180);
-  };
-
-  const handleNextPart3Interstitial = () => {
     trackFunnelStep('reachedProcessing');
     refreshData();
-    goToStep('processing');
+    setTimeout(() => goToStep('processing'), 180);
   };
 
   const handleProcessingComplete = () => {
@@ -365,7 +360,8 @@ export default function App() {
   };
 
   const handleRetake = () => {
-    setAnswers({});
+    setGoalOther(false);
+    setAnswers({ feedback: { clarity: 4, expectations: 4, interaction: 4 } });
     setRecapAnswers({});
     setRecapCorrectCount(0);
     setCurrentSubmission(null);
@@ -434,15 +430,13 @@ export default function App() {
 
       // Part 4 (formerly Part 3): Gaya Belajar (1-5)
       case 'p3_q1':
-        return { currentPart: 4, stepInPart: 1, totalInPart: 5 };
+        return { currentPart: 4, stepInPart: 1, totalInPart: 4 };
       case 'p3_q2':
-        return { currentPart: 4, stepInPart: 2, totalInPart: 5 };
+        return { currentPart: 4, stepInPart: 2, totalInPart: 4 };
       case 'p3_q3':
-        return { currentPart: 4, stepInPart: 3, totalInPart: 5 };
+        return { currentPart: 4, stepInPart: 3, totalInPart: 4 };
       case 'p3_q4':
-        return { currentPart: 4, stepInPart: 4, totalInPart: 5 };
-      case 'p3_interstitial':
-        return { currentPart: 4, stepInPart: 5, totalInPart: 5 };
+        return { currentPart: 4, stepInPart: 4, totalInPart: 4 };
 
       // Part 5: Form Data Diri
       case 'lead_form':
@@ -468,7 +462,7 @@ export default function App() {
       {/* Kodree-style Top Segmented Progress Bar */}
       {showHeaderProgress && (
         <ProgressBar
-          currentPart={currentStep.startsWith('feedback_') ? 1 : progressMeta.currentPart + 1}
+          currentPart={currentStep.startsWith('feedback_') ? 2 : progressMeta.currentPart === 1 ? 1 : progressMeta.currentPart + 1}
           stepInPart={currentStep.startsWith('feedback_') ? ['feedback_ratings', 'feedback_duration', 'feedback_text'].indexOf(currentStep) + 1 : progressMeta.stepInPart}
           totalInPart={currentStep.startsWith('feedback_') ? 3 : progressMeta.totalInPart}
           onBack={goBack}
@@ -477,7 +471,7 @@ export default function App() {
       )}
 
       {/* Main Viewport Container */}
-      <main className={`flex-1 min-h-0 flex flex-col items-center py-2 px-3 ${currentStep.startsWith('feedback_') || currentStep === 'result' ? 'justify-start overflow-y-auto' : 'justify-center overflow-y-auto sm:overflow-hidden'}`}>
+      <main className={`flex-1 min-h-0 flex flex-col items-center py-2 px-3 ${currentStep.startsWith('feedback_') || currentStep === 'result' || currentStep === 'welcome' || currentStep === 'p1_q4' ? 'justify-start overflow-y-auto' : 'justify-center overflow-y-auto sm:overflow-hidden'}`}>
         {/* Step: Welcome Screen */}
         {currentStep === 'welcome' && (
           <div className="w-full max-w-[420px] mx-auto py-3 sm:py-5">
@@ -495,56 +489,62 @@ export default function App() {
             </div>
 
             {/* Feature Cards */}
-            <div className="bg-[#F9EDDE]/30 border border-[#F9EDDE] rounded-2xl p-3.5 mb-4 space-y-2">
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
-                  <Award className="w-3.5 h-3.5" />
+            <div className="bg-[#F9EDDE]/30 border border-[#F9EDDE] rounded-2xl p-2.5 mb-3 grid grid-cols-2 gap-x-3 gap-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <Award className="w-3 h-3" />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                <h3 className="font-heading font-bold text-[11px] text-[#231F20]">
                   Hanya &lt;5 menit
                 </h3>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
-                  <Sparkles className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <Sparkles className="w-3 h-3" />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                <h3 className="font-heading font-bold text-[11px] text-[#231F20]">
                   Feedback
                 </h3>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
-                  <Clock className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <Clock className="w-3 h-3" />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                <h3 className="font-heading font-bold text-[11px] text-[#231F20]">
                   Quiz recap materi mini class
                 </h3>
               </div>
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
-                  <BookOpen className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <BookOpen className="w-3 h-3" />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                <h3 className="font-heading font-bold text-[11px] text-[#231F20]">
                   Mini asesmen
                 </h3>
               </div>
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
-                  <CheckCircle className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <CheckCircle className="w-3 h-3" />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                <h3 className="font-heading font-bold text-[11px] text-[#231F20]">
                   Sertiffikat
                 </h3>
               </div>
             </div>
 
+            <div className="mb-3">
+              <label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
+              <input id="certificate-name" type="text" autoComplete="name" maxLength={150} value={certificateName} onChange={(event) => setCertificateName(event.target.value)} placeholder="Tulis nama yang ingin tercetak di sertifikat" className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs focus:outline-none focus:border-[#BD214C]" aria-describedby="certificate-name-help" />
+              <p id="certificate-name-help" className="text-[10px] text-gray-500 mt-1">Isi minimal 3 karakter. Kamu bisa mengoreksinya sebelum mengirim data.</p>
+            </div>
             {/* Start Button */}
             <button
               type="button"
               onClick={handleStart}
-              className="w-full py-3.5 px-5 rounded-xl bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/25 active:scale-[0.99] transition-all cursor-pointer"
+              disabled={certificateName.trim().length < 3}
+              className="w-full py-3.5 px-5 rounded-xl bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/25 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span>Mulai Post Test Sekarang</span>
               <ArrowRight className="w-4 h-4" />
@@ -557,7 +557,13 @@ export default function App() {
             step={currentStep === 'feedback_ratings' ? 'ratings' : currentStep === 'feedback_duration' ? 'duration' : 'text'}
             feedback={answers.feedback || {}}
             onChange={(feedback) => setAnswers((prev) => ({ ...prev, feedback }))}
-            onNext={() => goToStep(currentStep === 'feedback_ratings' ? 'feedback_duration' : currentStep === 'feedback_duration' ? 'feedback_text' : 'p1_q1')}
+            onNext={() => {
+              if (currentStep === 'feedback_text') {
+                trackFunnelStep('startedPart2');
+                refreshData();
+              }
+              goToStep(currentStep === 'feedback_ratings' ? 'feedback_duration' : currentStep === 'feedback_duration' ? 'feedback_text' : 'recap_intro');
+            }}
           />
         )}
         {/* Part 1 Question 1 */}
@@ -619,22 +625,33 @@ export default function App() {
             totalInPart={4}
             questionText="Goal utama kamu mengikuti Mini Class Performance Marketing?"
             subText="Tujuan ini akan menentukan rekomendasi program karier kamu."
-            options={[
-              'Cari pekerjaan pertama',
-              'Bikin bisnis',
-              'Switch career',
-              'Upskill untuk kebutuhan kerjaan',
-            ]}
-            selectedValues={answers.p1_goal ? [answers.p1_goal] : []}
-            onSelect={(val) =>
-              handleSelectP1Q4(
-                val as
-                  | 'Cari pekerjaan pertama'
-                  | 'Bikin bisnis'
-                  | 'Switch career'
-                  | 'Upskill untuk kebutuhan kerjaan'
-              )
-            }
+            options={['Cari pekerjaan pertama', 'Bikin bisnis', 'Switch career', 'Upskill untuk kebutuhan kerjaan', 'Lainnya']}
+            selectedValues={goalOther ? ['Lainnya'] : answers.p1_goal ? [answers.p1_goal] : []}
+            onSelect={(val) => {
+              if (val === 'Lainnya') {
+                setGoalOther(true);
+                if (!goalOther) setAnswers((prev) => ({ ...prev, p1_goal: '' }));
+              } else {
+                setGoalOther(false);
+                handleSelectP1Q4(val as 'Cari pekerjaan pertama' | 'Bikin bisnis' | 'Switch career' | 'Upskill untuk kebutuhan kerjaan');
+              }
+            }}
+            customOption={{
+              value: goalOther ? answers.p1_goal || '' : '',
+              onChange: (value) => {
+                setGoalOther(true);
+                setAnswers((prev) => ({ ...prev, p1_goal: value }));
+              },
+            }}
+            showNext={goalOther}
+            canNext={!!answers.p1_goal?.trim()}
+            onNext={() => {
+              if (!answers.p1_goal?.trim()) return;
+              setAnswers((prev) => ({ ...prev, p1_goal: prev.p1_goal?.trim() }));
+              trackFunnelStep('reachedPart1Confirm');
+              refreshData();
+              goToStep('p1_confirm');
+            }}
           />
         )}
 
@@ -883,11 +900,6 @@ export default function App() {
           />
         )}
 
-        {/* Part 3 Screen 5: Interstitial Testimonial */}
-        {currentStep === 'p3_interstitial' && (
-          <InterstitialTestimonial onNext={handleNextPart3Interstitial} />
-        )}
-
         {/* Part 4 (a) Processing Screen */}
         {currentStep === 'processing' && (
           <ProcessingScreen onComplete={handleProcessingComplete} />
@@ -896,6 +908,7 @@ export default function App() {
         {/* Part 4 (b) Form Data Diri */}
         {currentStep === 'lead_form' && (
           <LeadForm
+            initialName={certificateName.trim()}
             onSubmit={handleLeadFormSubmit}
             onOpenPrivacy={() => setIsPrivacyOpen(true)}
           />

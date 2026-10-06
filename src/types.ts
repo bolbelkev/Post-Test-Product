@@ -18,11 +18,7 @@ export interface QuizAnswers {
   p1_pernah_iklan?: 'Sudah' | 'Belum';
   p1_usia?: '19-23' | '24-29' | '30-35' | '>35';
   p1_pekerjaan?: 'Pekerja kantoran' | 'Freelance' | 'Pemilik bisnis' | 'Fresh graduate';
-  p1_goal?:
-    | 'Cari pekerjaan pertama'
-    | 'Bikin bisnis'
-    | 'Switch career'
-    | 'Upskill untuk kebutuhan kerjaan';
+  p1_goal?: string;
 
   // Part 2: Recap Materi (10 Soal Pilihan Ganda)
   recap_answers?: Record<number, string>;

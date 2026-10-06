@@ -43,7 +43,7 @@ export function FeedbackScreen({ step, feedback, onChange, onNext }: Props) {
                 type="range" min={1} max={5} step={1}
                 aria-label={text}
                 aria-valuetext={typeof feedback[key] === 'number' ? `${feedback[key]} dari 5` : 'Belum memilih rating'}
-                value={typeof feedback[key] === 'number' ? feedback[key] : 3}
+                value={typeof feedback[key] === 'number' ? feedback[key] : 4}
                 onChange={(event) => onChange({ ...feedback, [key]: Number(event.target.value) })}
                 onPointerUp={(event) => onChange({ ...feedback, [key]: Number(event.currentTarget.value) })}
                 onKeyUp={(event) => {
@@ -58,7 +58,6 @@ export function FeedbackScreen({ step, feedback, onChange, onNext }: Props) {
                 <span>Sangat tidak setuju</span><span>Sangat setuju</span>
               </div>
             </div>
-            {key === 'interaction' && <button type="button" aria-pressed={feedback.interaction === 'not_attended'} className={`${optionClass(feedback.interaction === 'not_attended')} w-full text-xs`} onClick={() => onChange({ ...feedback, interaction: 'not_attended' })}>Tidak mengikuti sesi tanya jawab</button>}
           </fieldset>
         ))}
       </>}
@@ -78,7 +77,7 @@ export function FeedbackScreen({ step, feedback, onChange, onNext }: Props) {
           <textarea id="feedback-suggestions" rows={4} maxLength={3000} value={feedback.suggestions || ''} onChange={(event) => onChange({ ...feedback, suggestions: event.target.value })} placeholder="Topik, format, atau hal yang bisa kami perbaiki..." className="w-full rounded-xl border border-gray-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#BD214C]" />
         </div>
       </>}
-      <button type="submit" disabled={!ready} className="w-full rounded-xl bg-[#BD214C] py-3 text-white font-heading font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{step === 'text' ? 'Lanjut ke profil kamu' : 'Lanjut'}</button>
+      <button type="submit" disabled={!ready} className="w-full rounded-xl bg-[#BD214C] py-3 text-white font-heading font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{step === 'text' ? 'Lanjut ke recap materi' : 'Lanjut'}</button>
     </form>
   );
 }

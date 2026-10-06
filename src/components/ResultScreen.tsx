@@ -127,15 +127,19 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           <div className="space-y-1.5 mb-3 text-xs text-gray-700">
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Praktik langsung iklan sungguhan & budget campaign</span>
+              <span>Praktik hands on handle real brand untuk tambah porfolio</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Dibimbing mentor praktisi top tech & agency</span>
+              <span>dibimbing instruktur praktisi</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Project portofolio nyata siap kerja</span>
+              <span>Agency based curriculum</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>bisa dicicil 4x</span>
             </div>
           </div>
 
@@ -143,10 +147,10 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           <button
             type="button"
             onClick={handleCta}
-            className="w-full py-3 px-4 rounded-xl bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/30 active:scale-[0.99] transition-all cursor-pointer"
+            className="w-full py-2 px-3 rounded-lg bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/30 active:scale-[0.99] transition-all cursor-pointer"
           >
             <span>Lihat Program Bootcamp Performance Marketing</span>
-            <ExternalLink className="w-3.5 h-3.5 stroke-[2.5]" />
+            <ExternalLink className="w-3 h-3 stroke-[2.5]" />
           </button>
 
           {clicked && (

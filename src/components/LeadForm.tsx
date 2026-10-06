@@ -8,12 +8,13 @@ import { Award, Lock, ArrowRight, AlertCircle, Check } from 'lucide-react';
 import { UserContact } from '../types.ts';
 
 interface LeadFormProps {
+  initialName?: string;
   onSubmit: (data: UserContact) => void;
   onOpenPrivacy: () => void;
 }
 
-export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, onOpenPrivacy }) => {
-  const [namaLengkap, setNamaLengkap] = useState('');
+export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, onOpenPrivacy, initialName = '' }) => {
+  const [namaLengkap, setNamaLengkap] = useState(initialName);
   const [email, setEmail] = useState('');
   const [nomorHp, setNomorHp] = useState('');
   const [consent, setConsent] = useState(false);

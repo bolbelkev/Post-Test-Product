@@ -17,6 +17,9 @@ interface QuestionCardProps {
   onSelect: (option: string) => void;
   onNext?: () => void;
   canNext?: boolean;
+  children?: React.ReactNode;
+  customOption?: { value: string; onChange: (value: string) => void };
+  showNext?: boolean;
 }
 
 // Icon helper to replicate Kodree's visual option style
@@ -85,6 +88,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   onSelect,
   onNext,
   canNext = false,
+  children,
+  customOption,
+  showNext = false,
 }) => {
   return (
     <div className="w-full max-w-[420px] mx-auto px-4 py-2 flex flex-col justify-center">
@@ -105,6 +111,21 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           const isSelected = selectedValues.includes(option);
           const icon = getOptionIcon(option, idx);
 
+          if (option === 'Lainnya' && customOption) {
+            return (
+              <input
+                key={option}
+                type="text"
+                aria-label="Tujuan lainnya mengikuti mini class"
+                placeholder="Lainnya"
+                maxLength={500}
+                value={customOption.value}
+                onFocus={() => onSelect('Lainnya')}
+                onChange={(event) => customOption.onChange(event.target.value)}
+                className={`w-full py-4 px-3 rounded-2xl border text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#BD214C] ${isSelected ? 'border-[#BD214C] bg-[#BD214C]/5' : 'border-gray-200 bg-white'}`}
+              />
+            );
+          }
           return (
             <button
               key={option}
@@ -147,8 +168,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         })}
       </div>
 
-      {/* Multi-select Next button */}
-      {isMultiSelect && (
+      {children}
+
+      {/* Next button */}
+      {(isMultiSelect || children || showNext) && (
         <div className="mt-3.5 flex justify-center">
           <button
             type="button"
