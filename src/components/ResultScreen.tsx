@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { SubmissionRecord } from '../types.ts';
 import { getBootcampCtaUrl } from '../utils/scoring.ts';
-import bootcampHeroImg from '../assets/images/bootcamp_preview_hero_1790751689095.jpg';
+import bootcampHeroImg from '../assets/images/tambahan-diskon-5-persen-mini-class.png';
 
 interface ResultScreenProps {
   submission: SubmissionRecord;
@@ -63,7 +63,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       {/* 1. Header & Title */}
       <div className="text-center">
         <h1 className="font-heading text-lg sm:text-xl font-bold text-[#231F20]">
-          Hasil kecocokan kamu sudah siap
+          halo {submission.user.namaLengkap}, hasil recap sudah siap!
         </h1>
       </div>
 
@@ -135,22 +135,14 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 
       {/* 4. Benefit Bootcamp Card with CTA */}
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-2xs">
-        <div className="relative h-28 w-full bg-gray-100">
-          <img
-            src={bootcampHeroImg}
-            alt="Workstation Performance Marketing Boleh Belajar"
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-          <div className="absolute bottom-2 left-3 right-3 text-white">
-            <h4 className="font-heading text-xs sm:text-sm font-bold leading-tight">
-              Bootcamp Performance Marketing — Boleh Belajar
-            </h4>
-          </div>
-        </div>
+        <img
+          src={bootcampHeroImg}
+          alt="Tambahan diskon 5% khusus peserta Mini Class"
+          className="block w-full h-auto"
+        />
 
         <div className="p-3 sm:p-4">
+          <h4 className="font-heading text-xs sm:text-sm font-bold leading-tight mb-3">Bootcamp Performance Marketing — Boleh Belajar</h4>
           <div className="space-y-1.5 mb-3 text-xs text-gray-700">
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
