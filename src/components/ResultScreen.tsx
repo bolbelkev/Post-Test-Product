@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import {
   ExternalLink,
   Target,
@@ -30,6 +30,26 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   onRetake,
 }) => {
   const [clicked, setClicked] = useState(submission.clickedCtaBootcamp);
+  const [animatedScore, setAnimatedScore] = useState(50);
+  const ringGradientId = useId();
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setAnimatedScore(submission.skor);
+      return;
+    }
+    setAnimatedScore(50);
+    let frame: number;
+    let started: number | undefined;
+    const animate = (time: number) => {
+      started ??= time;
+      const progress = Math.min(1, (time - started) / 1800);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedScore(50 + (submission.skor - 50) * eased);
+      if (progress < 1) frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [submission.skor]);
   const ctaUrl = getBootcampCtaUrl(submission.id);
 
   const handleCta = () => {
@@ -52,13 +72,19 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         <div className="inline-flex flex-col items-center justify-center mb-2">
           <div className="relative flex items-center justify-center">
             {/* SVG Circle Gauge */}
-            <svg className="w-24 h-24 transform -rotate-90">
+            <svg viewBox="0 0 96 96" className="w-24 h-24 transform -rotate-90" role="img" aria-label={`Skor ${submission.skor} dari 100`}>
+              <defs>
+                <linearGradient id={ringGradientId} x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#E8195E" />
+                  <stop offset="100%" stopColor="#BD214C" />
+                </linearGradient>
+              </defs>
               <circle
                 cx="48"
                 cy="48"
                 r="40"
-                className="text-gray-100"
-                strokeWidth="8"
+                className="text-[#BD214C]/10"
+                strokeWidth="9"
                 stroke="currentColor"
                 fill="transparent"
               />
@@ -66,18 +92,17 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
                 cx="48"
                 cy="48"
                 r="40"
-                className="text-[#BD214C] transition-all duration-1000 ease-out"
-                strokeWidth="8"
+                strokeWidth="9"
                 strokeDasharray={2 * Math.PI * 40}
-                strokeDashoffset={2 * Math.PI * 40 * (1 - submission.skor / 100)}
+                strokeDashoffset={2 * Math.PI * 40 * (1 - animatedScore / 100)}
                 strokeLinecap="round"
-                stroke="currentColor"
+                stroke={`url(#${ringGradientId})`}
                 fill="transparent"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="font-heading text-2xl font-extrabold text-[#BD214C] tabular-nums">
-                {submission.skor}
+                {Math.round(animatedScore)}
               </span>
             </div>
           </div>
