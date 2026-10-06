@@ -37,7 +37,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   };
 
   return (
-    <div className="w-full max-w-[420px] mx-auto px-4 py-3 space-y-3.5">
+    <div className="w-full max-w-[420px] shrink-0 mx-auto px-4 py-3 space-y-3.5">
       {/* 1. Header & Title */}
       <div className="text-center">
         <h1 className="font-heading text-lg sm:text-xl font-bold text-[#231F20]">
@@ -75,10 +75,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="font-heading text-2xl font-extrabold text-[#BD214C] tabular-nums">
-                {submission.skor}%
-              </span>
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                Kecocokan
+                {submission.skor}
               </span>
             </div>
           </div>

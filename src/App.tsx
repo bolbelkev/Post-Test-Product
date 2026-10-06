@@ -1,3 +1,4 @@
+import { FeedbackScreen } from './components/FeedbackScreen.tsx';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -42,6 +43,9 @@ import {
 
 type StepId =
   | 'welcome'
+  | 'feedback_ratings'
+  | 'feedback_duration'
+  | 'feedback_text'
   // Part 1: Profiling
   | 'p1_q1'
   | 'p1_q2'
@@ -137,7 +141,7 @@ export default function App() {
   const handleStart = () => {
     trackFunnelStep('totalStarted');
     refreshData();
-    goToStep('p1_q1');
+    goToStep('feedback_ratings');
   };
 
   // Part 1 selection handlers
@@ -464,16 +468,16 @@ export default function App() {
       {/* Kodree-style Top Segmented Progress Bar */}
       {showHeaderProgress && (
         <ProgressBar
-          currentPart={progressMeta.currentPart}
-          stepInPart={progressMeta.stepInPart}
-          totalInPart={progressMeta.totalInPart}
+          currentPart={currentStep.startsWith('feedback_') ? 1 : progressMeta.currentPart + 1}
+          stepInPart={currentStep.startsWith('feedback_') ? ['feedback_ratings', 'feedback_duration', 'feedback_text'].indexOf(currentStep) + 1 : progressMeta.stepInPart}
+          totalInPart={currentStep.startsWith('feedback_') ? 3 : progressMeta.totalInPart}
           onBack={goBack}
           canGoBack={history.length > 0}
         />
       )}
 
       {/* Main Viewport Container */}
-      <main className="flex-1 flex flex-col justify-center items-center py-2 px-3 overflow-y-auto sm:overflow-hidden">
+      <main className={`flex-1 min-h-0 flex flex-col items-center py-2 px-3 ${currentStep.startsWith('feedback_') || currentStep === 'result' ? 'justify-start overflow-y-auto' : 'justify-center overflow-y-auto sm:overflow-hidden'}`}>
         {/* Step: Welcome Screen */}
         {currentStep === 'welcome' && (
           <div className="w-full max-w-[420px] mx-auto py-3 sm:py-5">
@@ -486,7 +490,7 @@ export default function App() {
                 Post Test Fundamental Performance Marketing
               </h1>
               <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto leading-relaxed">
-                Asesmen singkat untuk melihat skor kesiapan karier dan penerbitan e-sertifikat resmi Boleh Belajar.
+                Selesaikan langkah terakhir mini class untuk mengulas materi dan mendapatkan sertifikat
               </p>
             </div>
 
@@ -497,7 +501,7 @@ export default function App() {
                   <Award className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="font-heading font-bold text-xs text-[#231F20]">
-                  Penerbitan E-Sertifikat Resmi
+                  Hanya &lt;5 menit
                 </h3>
               </div>
 
@@ -506,7 +510,7 @@ export default function App() {
                   <Sparkles className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="font-heading font-bold text-xs text-[#231F20]">
-                  Skor Kecocokan & Rekomendasi
+                  Feedback
                 </h3>
               </div>
 
@@ -515,7 +519,23 @@ export default function App() {
                   <Clock className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="font-heading font-bold text-xs text-[#231F20]">
-                  Hanya 3 Menit
+                  Quiz recap materi mini class
+                </h3>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <BookOpen className="w-3.5 h-3.5" />
+                </div>
+                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                  Mini asesmen
+                </h3>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-white border border-[#F9EDDE] flex items-center justify-center text-[#BD214C] shrink-0">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                </div>
+                <h3 className="font-heading font-bold text-xs text-[#231F20]">
+                  Sertiffikat
                 </h3>
               </div>
             </div>
@@ -532,6 +552,14 @@ export default function App() {
           </div>
         )}
 
+        {currentStep.startsWith('feedback_') && (
+          <FeedbackScreen
+            step={currentStep === 'feedback_ratings' ? 'ratings' : currentStep === 'feedback_duration' ? 'duration' : 'text'}
+            feedback={answers.feedback || {}}
+            onChange={(feedback) => setAnswers((prev) => ({ ...prev, feedback }))}
+            onNext={() => goToStep(currentStep === 'feedback_ratings' ? 'feedback_duration' : currentStep === 'feedback_duration' ? 'feedback_text' : 'p1_q1')}
+          />
+        )}
         {/* Part 1 Question 1 */}
         {currentStep === 'p1_q1' && (
           <QuestionCard

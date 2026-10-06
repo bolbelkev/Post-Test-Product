@@ -3,7 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export interface ClassFeedback {
+  clarity?: number;
+  expectations?: number;
+  interaction?: number | "not_attended";
+  duration?: "Terlalu singkat" | "Pas" | "Terlalu panjang";
+  insight?: string;
+  suggestions?: string;
+}
+
 export interface QuizAnswers {
+  feedback?: ClassFeedback;
   // Part 1: Profiling
   p1_pernah_iklan?: 'Sudah' | 'Belum';
   p1_usia?: '19-23' | '24-29' | '30-35' | '>35';

@@ -217,6 +217,12 @@ export function exportSubmissionsToCsv(submissions: SubmissionRecord[]): string 
     'Pendekatan Belajar',
     'Klik CTA Bootcamp',
     'Waktu Klik CTA',
+    'Feedback: Kejelasan',
+    'Feedback: Ekspektasi',
+    'Feedback: Interaksi',
+    'Feedback: Durasi',
+    'Feedback: Insight',
+    'Feedback: Saran',
   ];
 
   const escapeCsv = (str: string | number | undefined | null) => {
@@ -244,6 +250,12 @@ export function exportSubmissionsToCsv(submissions: SubmissionRecord[]): string 
     escapeCsv(s.answers.p3_pendekatan),
     escapeCsv(s.clickedCtaBootcamp ? 'Ya' : 'Belum'),
     escapeCsv(s.ctaClickTimestamp ? new Date(s.ctaClickTimestamp).toLocaleString('id-ID') : '-'),
+    escapeCsv(s.answers.feedback?.clarity),
+    escapeCsv(s.answers.feedback?.expectations),
+    escapeCsv(s.answers.feedback?.interaction),
+    escapeCsv(s.answers.feedback?.duration),
+    escapeCsv(s.answers.feedback?.insight),
+    escapeCsv(s.answers.feedback?.suggestions),
   ]);
 
   return [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');

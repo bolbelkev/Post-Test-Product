@@ -30,10 +30,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     return 0;
   };
 
-  const part1Percent = getPartPercentage(1);
-  const part2Percent = getPartPercentage(2);
-  const part3Percent = getPartPercentage(3);
-  const part4Percent = getPartPercentage(4);
 
   return (
     <div className="w-full max-w-[420px] mx-auto pt-3 pb-1 px-4 flex items-center justify-between">
@@ -52,32 +48,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <div className="w-7 h-7 shrink-0" />
       )}
 
-      {/* Centered Segmented Progress Bar (4 Parts) */}
-      <div className="w-36 sm:w-44 grid grid-cols-4 gap-1.5 mx-auto">
-        <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${part1Percent}%` }}
-          />
-        </div>
-        <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${part2Percent}%` }}
-          />
-        </div>
-        <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${part3Percent}%` }}
-          />
-        </div>
-        <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${part4Percent}%` }}
-          />
-        </div>
+      <div className="w-36 sm:w-44 grid grid-cols-5 gap-1.5 mx-auto" aria-label="Progres post test">
+        {[1, 2, 3, 4, 5].map((part) => (
+          <div key={part} className="h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full" style={{ width: `${getPartPercentage(part)}%` }} />
+          </div>
+        ))}
       </div>
 
       {/* Right Spacer for balance */}
