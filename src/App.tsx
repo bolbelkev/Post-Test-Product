@@ -52,16 +52,7 @@ type StepId =
   | 'p1_confirm'
   // Part 2: Recap Materi
   | 'recap_intro'
-  | 'recap_q1'
-  | 'recap_q2'
-  | 'recap_q3'
-  | 'recap_q4'
-  | 'recap_q5'
-  | 'recap_q6'
-  | 'recap_q7'
-  | 'recap_q8'
-  | 'recap_q9'
-  | 'recap_q10'
+  | `recap_q${number}`
   | 'recap_processing'
   | 'recap_mini_result'
   // Part 3 (formerly Part 2): Belief Priming & Level Check
@@ -193,7 +184,7 @@ export default function App() {
     const updated = { ...recapAnswers, [qId]: option };
     setRecapAnswers(updated);
 
-    if (qId < 10) {
+    if (qId < RECAP_QUESTIONS.length) {
       setTimeout(() => goToStep(`recap_q${qId + 1}` as StepId), 180);
     } else {
       // Calculate score for 10 recap questions
@@ -385,6 +376,9 @@ export default function App() {
     stepInPart: number;
     totalInPart: number;
   } => {
+    if (currentStep.startsWith('recap_q')) {
+      return { currentPart: 2, stepInPart: Number(currentStep.replace('recap_q', '')), totalInPart: RECAP_QUESTIONS.length };
+    }
     switch (currentStep) {
       // Part 1: Profiling (1-5)
       case 'p1_q1':
@@ -398,31 +392,11 @@ export default function App() {
       case 'p1_confirm':
         return { currentPart: 1, stepInPart: 5, totalInPart: 5 };
 
-      // Part 2: Recap Materi (1-10)
       case 'recap_intro':
-        return { currentPart: 2, stepInPart: 0, totalInPart: 10 };
-      case 'recap_q1':
-        return { currentPart: 2, stepInPart: 1, totalInPart: 10 };
-      case 'recap_q2':
-        return { currentPart: 2, stepInPart: 2, totalInPart: 10 };
-      case 'recap_q3':
-        return { currentPart: 2, stepInPart: 3, totalInPart: 10 };
-      case 'recap_q4':
-        return { currentPart: 2, stepInPart: 4, totalInPart: 10 };
-      case 'recap_q5':
-        return { currentPart: 2, stepInPart: 5, totalInPart: 10 };
-      case 'recap_q6':
-        return { currentPart: 2, stepInPart: 6, totalInPart: 10 };
-      case 'recap_q7':
-        return { currentPart: 2, stepInPart: 7, totalInPart: 10 };
-      case 'recap_q8':
-        return { currentPart: 2, stepInPart: 8, totalInPart: 10 };
-      case 'recap_q9':
-        return { currentPart: 2, stepInPart: 9, totalInPart: 10 };
-      case 'recap_q10':
+        return { currentPart: 2, stepInPart: 0, totalInPart: RECAP_QUESTIONS.length };
       case 'recap_processing':
       case 'recap_mini_result':
-        return { currentPart: 2, stepInPart: 10, totalInPart: 10 };
+        return { currentPart: 2, stepInPart: RECAP_QUESTIONS.length, totalInPart: RECAP_QUESTIONS.length };
 
       // Part 3 (formerly Part 2): Belief Priming & Level Check (1-6)
       case 'p2_q1':
@@ -479,7 +453,7 @@ export default function App() {
       )}
 
       {/* Main Viewport Container */}
-      <main className={`flex-1 min-h-0 flex flex-col items-center py-2 px-3 ${currentStep.startsWith('feedback_') || currentStep === 'result' || currentStep === 'welcome' || currentStep === 'p1_q4' ? 'justify-start overflow-y-auto' : 'justify-center overflow-y-auto sm:overflow-hidden'}`}>
+      <main className={`flex-1 min-h-0 flex flex-col items-center py-2 px-3 ${currentStep.startsWith('feedback_') || currentStep === 'result' || currentStep === 'welcome' || currentStep === 'p1_q4' || currentStep.startsWith('recap_q') ? 'justify-start overflow-y-auto' : 'justify-center overflow-y-auto sm:overflow-hidden'}`}>
         {/* Step: Welcome Screen */}
         {currentStep === 'welcome' && (
           <div className="w-full max-w-[420px] mx-auto py-3 sm:py-5">
@@ -685,7 +659,7 @@ export default function App() {
           return (
             <QuestionCard
               questionNumber={qNum}
-              totalInPart={10}
+              totalInPart={RECAP_QUESTIONS.length}
               questionText={qData.question}
               subText={qData.subText}
               options={qData.options}
@@ -704,7 +678,7 @@ export default function App() {
         {currentStep === 'recap_mini_result' && (
           <RecapMiniResult
             correctCount={recapCorrectCount}
-            totalQuestions={10}
+            totalQuestions={RECAP_QUESTIONS.length}
             onContinue={handleContinueFromRecap}
           />
         )}

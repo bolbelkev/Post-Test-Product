@@ -18,25 +18,25 @@ export const RecapMiniResult: React.FC<RecapMiniResultProps> = ({
   totalQuestions,
   onContinue,
 }) => {
-  const narrative = getRecapBandNarrative(correctCount);
+  const narrative = getRecapBandNarrative(correctCount, totalQuestions);
 
   // Badge icon or color based on band
   const getBadgeStyle = () => {
-    if (correctCount >= 9) {
+    if (correctCount / totalQuestions >= 0.9) {
       return {
         badgeText: 'Sangat Baik',
         bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
         ring: 'text-emerald-600',
       };
     }
-    if (correctCount >= 6) {
+    if (correctCount / totalQuestions >= 0.6) {
       return {
         badgeText: 'Cukup Solid',
         bg: 'bg-blue-50 text-blue-700 border-blue-200',
         ring: 'text-blue-600',
       };
     }
-    if (correctCount >= 3) {
+    if (correctCount / totalQuestions >= 0.3) {
       return {
         badgeText: 'Modal Awal Bagus',
         bg: 'bg-amber-50 text-amber-700 border-amber-200',

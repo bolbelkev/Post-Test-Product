@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { RECAP_QUESTIONS } from '../data/recapQuestions.ts';
 import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface RecapIntroProps {
@@ -22,7 +23,7 @@ export const RecapIntro: React.FC<RecapIntroProps> = ({ onStart }) => {
       </h2>
 
       <p className="text-xs text-gray-500 mb-4 max-w-xs mx-auto leading-relaxed">
-        Uji seberapa dalam pemahaman materi kamu lewat 10 pertanyaan pilihan ganda singkat.
+        Uji seberapa dalam pemahaman materi kamu lewat {RECAP_QUESTIONS.length} pertanyaan pilihan ganda singkat.
       </p>
 
       <button

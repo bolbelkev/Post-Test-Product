@@ -1,19 +1,4 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-export interface RecapQuestion {
-  id: number;
-  question: string;
-  subText?: string;
-  options: string[];
-  correctAnswer: string;
-  optionIcons?: Record<string, string>;
-}
-
-// Batch 6: kunci dari sel kuning pada workbook, tab paling kanan.
-export const RECAP_QUESTIONS: RecapQuestion[] = [
+[
   {
     "id": 1,
     "question": "Apa yang dimaksud dengan performance marketing?",
@@ -234,17 +219,4 @@ export const RECAP_QUESTIONS: RecapQuestion[] = [
     ],
     "correctAnswer": "Return, karena marketer perlu mengevaluasi efisiensi biaya seperti CPA, ROAS, dan ROI"
   }
-];
-
-export function getRecapBandNarrative(correctCount: number, totalQuestions = RECAP_QUESTIONS.length): string {
-  if (correctCount / totalQuestions >= 0.9) {
-    return `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! Pengetahuan kamu tentang Performance Marketing sudah sangat baik.`;
-  }
-  if (correctCount / totalQuestions >= 0.6) {
-    return `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! Dasar-dasar Performance Marketing kamu udah cukup solid.`;
-  }
-  if (correctCount / totalQuestions >= 0.3) {
-    return `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! Kamu udah punya modal awal yang bagus buat lanjut belajar lebih dalam.`;
-  }
-  return `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! Kamu masih punya banyak ruang buat berkembang — tenang aja, Boleh Belajar punya learning path yang bisa bantu kamu mulai dari awal.`;
-}
+]
