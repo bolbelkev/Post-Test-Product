@@ -73,16 +73,14 @@ export function FeedbackScreen({ step, feedback, onChange, onNext }: Props) {
   );
 }
 
-function RatingSlider({ label, value, onSelect }: { label: string; value?: number; onSelect: (value: number) => void }) {
-  const ratio = ((value ?? 3) - 1) / 4;
+export function RatingSlider({ label, value, onSelect }: { label: string; value?: number; onSelect: (value: number) => void }) {
+  const ratio = ((value ?? 1) - 1) / 4;
   const position = `calc(${ratio * 100}% + ${8 - ratio * 16}px)`;
   return (
     <div className="relative h-8">
       <div className="absolute left-2 right-2 top-3.5 h-1 rounded-full bg-gray-200" aria-hidden="true" />
-      {value !== undefined && <>
-        <div className="rating-fill absolute left-2 top-3.5 h-1 rounded-full bg-[#BD214C]" style={{ width: `calc(${ratio * 100}% - ${ratio * 16}px)` }} aria-hidden="true" />
-        <div className="rating-thumb absolute top-2 h-4 w-4 rounded-full bg-[#BD214C] shadow-sm pointer-events-none" style={{ left: position }} aria-hidden="true" />
-      </>}
+      <div className="rating-fill absolute left-2 top-3.5 h-1 rounded-full bg-[#BD214C]" style={{ width: `calc(${ratio * 100}% - ${ratio * 16}px)` }} aria-hidden="true" />
+      <div className="rating-thumb absolute top-2 h-4 w-4 rounded-full bg-[#BD214C] shadow-sm pointer-events-none" style={{ left: position, opacity: value === undefined ? 0 : 1 }} aria-hidden="true" />
       <input
         type="range" min={1} max={5} step={1}
         aria-label={label}

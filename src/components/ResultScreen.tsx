@@ -13,11 +13,12 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { SubmissionRecord } from '../types.ts';
-import { getBootcampCtaUrl } from '../utils/scoring.ts';
-import bootcampHeroImg from '../assets/images/tambahan-diskon-5-persen-mini-class.png';
+import type { QuizConfig, Answer } from '../../shared/model.ts';
 
 interface ResultScreenProps {
   submission: SubmissionRecord;
+  offer: QuizConfig['offer'];
+  allAnswers: Record<string, Answer>;
   certificateForm?: React.ReactNode;
   onCtaClick: () => void;
   onRetake: () => void;
@@ -25,6 +26,8 @@ interface ResultScreenProps {
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   submission,
+  offer,
+  allAnswers,
   certificateForm,
   onCtaClick,
   onRetake,
@@ -50,12 +53,17 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
   }, [submission.skor]);
-  const ctaUrl = getBootcampCtaUrl(submission.id);
+  const ctaUrl = new URL(offer.ctaUrl);
+  ctaUrl.searchParams.set('utm_source', 'post_test');
+  ctaUrl.searchParams.set('utm_medium', 'quiz');
+  ctaUrl.searchParams.set('utm_campaign', 'mini_class_pm');
+  const matched = offer.rules.filter(rule => rule.values.includes(String(allAnswers[rule.key]))).map(rule => rule.text);
+  const benefits = [...new Set(matched.length ? [...matched, ...offer.benefits] : offer.benefits)].slice(0, 4);
 
   const handleCta = () => {
     setClicked(true);
     onCtaClick();
-    window.open(ctaUrl, '_blank', 'noopener,noreferrer');
+    window.open(ctaUrl.toString(), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -136,30 +144,18 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       {/* 4. Benefit Bootcamp Card with CTA */}
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-2xs">
         <img
-          src={bootcampHeroImg}
-          alt="Tambahan diskon 5% khusus peserta Mini Class"
+          src={offer.image}
+          alt={offer.imageAlt}
           className="block w-full h-auto"
         />
 
         <div className="p-3 sm:p-4">
-          <h4 className="font-heading text-xs sm:text-sm font-bold leading-tight mb-3">Bootcamp Performance Marketing — Boleh Belajar</h4>
+          <h4 className="font-heading text-xs sm:text-sm font-bold leading-tight mb-3">{offer.title}</h4>
           <div className="space-y-1.5 mb-3 text-xs text-gray-700">
-            <div className="flex items-center gap-1.5">
+            {benefits.map((benefit, index) => <div key={index} className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Praktik hands on handle real brand untuk tambah porfolio</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>dibimbing instruktur praktisi</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Agency based curriculum</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>bisa dicicil 4x</span>
-            </div>
+              <span>{benefit}</span>
+            </div>)}
           </div>
 
           {/* Primary Highlighted CTA Button with UTM */}
@@ -168,7 +164,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             onClick={handleCta}
             className="w-full py-2 px-3 rounded-lg bg-[#BD214C] hover:bg-[#a61c42] text-white font-heading font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-md shadow-[#BD214C]/30 active:scale-[0.99] transition-all cursor-pointer"
           >
-            <span>Lihat Program Bootcamp Performance Marketing</span>
+            <span>{offer.ctaText}</span>
             <ExternalLink className="w-3 h-3 stroke-[2.5]" />
           </button>
 

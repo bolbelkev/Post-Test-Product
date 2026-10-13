@@ -1,11 +1,24 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import {defineConfig, type ViteDevServer} from 'vite';
+import { config as loadEnvironment } from 'dotenv';
+import { createHandler } from './server/http.ts';
+
+loadEnvironment({ path: '.env.local', quiet: true });
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), {
+      name: 'local-database-api',
+      configureServer(server: ViteDevServer) {
+        const handler = createHandler();
+        server.middlewares.use((req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse, next: () => void) => {
+          if (req.url?.startsWith('/api/')) void handler(req, res);
+          else next();
+        });
+      },
+    }],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

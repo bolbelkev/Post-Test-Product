@@ -9,13 +9,17 @@ import { UserContact } from '../types.ts';
 
 interface LeadFormProps {
   initialName?: string;
-  onSubmit: (data: UserContact) => void;
+  onSubmit: (data: UserContact) => Promise<void>;
+  initialEmail?: string;
+  notice?: string;
+  eligibility?: string;
   saved?: boolean;
 }
 
-export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, initialName = '' }) => {
+export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, initialName = '', initialEmail = '', notice = 'Sertifikat akan dikirim max. 3 hari kerja.', eligibility = 'Sertifikat hanya diberikan kepada peserta yang hadir pada seluruh sesi, day 1–3.' }) => {
   const namaLengkap = initialName;
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(initialEmail);
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [touched, setTouched] = useState({
     email: false,
@@ -25,13 +29,14 @@ export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, ini
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const isFormValid = isNamaValid && isEmailValid;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid) return;
+    if (!isFormValid || pending || saved) return;
 
     setError('');
+    setPending(true);
     try {
-      onSubmit({
+      await onSubmit({
       namaLengkap: namaLengkap.trim(),
       email: email.trim().toLowerCase(),
       nomorHp: '',
@@ -39,7 +44,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, ini
       });
     } catch {
       setError('Email belum tersimpan. Silakan coba lagi.');
-    }
+    } finally { setPending(false); }
   };
 
   return (
@@ -49,7 +54,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, ini
           Data untuk Sertifikat
         </h2>
         <p className="text-xs text-gray-500 mt-0.5">
-          Sertifikat akan dikirim max. 3 hari kerja.
+          {notice}
         </p>
       </div>
 
@@ -61,7 +66,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, ini
           </label>
           <input
             type="email"
-            readOnly={saved}
+            readOnly={saved || pending}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
@@ -81,21 +86,21 @@ export const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, saved = false, ini
         </div>
 
         <p className="text-[11px] text-gray-500 leading-relaxed">
-          Sertifikat hanya diberikan kepada peserta yang hadir pada seluruh sesi, day 1–3.
+          {eligibility}
         </p>
         {error && <p role="alert" className="text-xs text-rose-600">{error}</p>}
 
         {/* Submit button */}
         {saved ? <p role="status" className="email-saved-rise flex items-center justify-center gap-1.5 text-sm font-semibold text-emerald-600"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />Email tersimpan</p> : <button
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || pending}
           className={`w-full py-2.5 px-4 rounded-xl font-heading font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all ${
             isFormValid
               ? 'bg-[#BD214C] hover:bg-[#a61c42] text-white shadow-md shadow-[#BD214C]/25 active:scale-[0.99] cursor-pointer'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
         >
-          <span>Simpan Data Sertifikat</span>
+          <span>{pending ? 'Menyimpan email…' : 'Simpan Data Sertifikat'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>}
       </form>

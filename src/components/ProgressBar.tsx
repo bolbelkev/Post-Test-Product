@@ -10,6 +10,7 @@ interface ProgressBarProps {
   currentPart: number; // 1 (Profiling), 2 (Recap), 3 (Belief), 4 (Gaya Belajar)
   stepInPart: number;
   totalInPart: number;
+  totalParts?: number;
   onBack?: () => void;
   canGoBack?: boolean;
 }
@@ -18,6 +19,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   currentPart,
   stepInPart,
   totalInPart,
+  totalParts = 5,
   onBack,
   canGoBack = false,
 }) => {
@@ -48,8 +50,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <div className="w-7 h-7 shrink-0" />
       )}
 
-      <div className="w-36 sm:w-44 grid grid-cols-5 gap-1.5 mx-auto" aria-label="Progres post test">
-        {[1, 2, 3, 4, 5].map((part) => (
+      <div className="w-36 sm:w-44 grid gap-1.5 mx-auto" style={{gridTemplateColumns:`repeat(${totalParts},minmax(0,1fr))`}} aria-label="Progres post test">
+        {Array.from({length:totalParts},(_,i)=>i+1).map((part) => (
           <div key={part} className="h-1 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full bg-[#BD214C] transition-all duration-300 ease-out rounded-full" style={{ width: `${getPartPercentage(part)}%` }} />
           </div>
