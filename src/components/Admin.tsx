@@ -36,7 +36,7 @@ export function Admin() {
     setRevision(result.revision);await loadConfig();setMessage('Konfigurasi tersimpan. Berlaku untuk peserta yang baru mulai; sesi yang sudah berjalan tetap memakai konfigurasi awal.');
   });
   const download=()=>run(async()=>{
-    const response=await fetch('/api/admin/export?status='+encodeURIComponent(status),{credentials:'same-origin',cache:'no-store'});
+    const response=await fetch('/api?route=admin%2Fexport&status='+encodeURIComponent(status),{credentials:'same-origin',cache:'no-store'});
     if(!response.ok){const data=await response.json();throw new Error(data.error);}
     const blob=await response.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='peserta-post-test-pm.csv';a.click();URL.revokeObjectURL(url);
   });

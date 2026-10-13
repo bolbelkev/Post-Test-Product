@@ -14,7 +14,7 @@ export default defineConfig(() => {
       configureServer(server: ViteDevServer) {
         const handler = createHandler();
         server.middlewares.use((req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse, next: () => void) => {
-          if (req.url?.startsWith('/api/')) void handler(req, res);
+          if (req.url === '/api' || req.url?.startsWith('/api?') || req.url?.startsWith('/api/')) void handler(req, res);
           else next();
         });
       },
