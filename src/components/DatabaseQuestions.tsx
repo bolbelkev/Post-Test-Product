@@ -2,9 +2,9 @@ import React from 'react';
 import type { Answer,Question } from '../../shared/model.ts';
 import { QuestionCard } from './QuestionCard.tsx';
 import { RatingSlider } from './FeedbackScreen.tsx';
-export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabled, grouped }: {
+export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabled, grouped, showNext = true, autoAdvance = false, nextLabel = 'Lanjut' }: {
   questions: Question[]; answers: Record<string,Answer>; onAnswer: (key:string,value:Answer) => void;
-  onNext: () => void; disabled:boolean; grouped:boolean;
+  onNext: () => void; disabled:boolean; grouped:boolean; showNext?:boolean; autoAdvance?:boolean; nextLabel?:string;
 }) {
   const ready = questions.every(q => !q.required || (answers[q.key] !== undefined && (typeof answers[q.key] === 'number' || (Array.isArray(answers[q.key]) ? (answers[q.key] as string[]).length>0 : !!String(answers[q.key]).trim()))));
   const render = (q:Question) => {
@@ -19,7 +19,7 @@ export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabl
           onAnswer(q.key,next);
         } else {
           onAnswer(q.key,option);
-          if (questions.length === 1 && !grouped) onNext();
+          if (autoAdvance && questions.length === 1 && !grouped) onNext();
         }
       }} customOption={q.allowOther ? { value: typeof value==='string' && !q.options.includes(value) ? value : '', onChange: text=>onAnswer(q.key,text) } : undefined} />;
     if (q.type==='rating') return <div>
@@ -36,6 +36,6 @@ export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabl
         <p className="font-heading text-sm font-bold border-b border-[#F9EDDE] pb-3 mb-3">{q.text} {!q.required && <span className="text-gray-400 font-normal">(opsional)</span>}</p>{render(q)}
       </div> : <React.Fragment key={q.key}>{render(q)}</React.Fragment>)}
     </fieldset>
-    <button type="button" onClick={onNext} disabled={!ready || disabled} className="w-full rounded-xl bg-[#BD214C] py-3 text-white font-heading font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed">Lanjut</button>
+    {showNext && <button type="button" onClick={onNext} disabled={!ready || disabled} className="w-full rounded-xl bg-[#BD214C] py-3 text-white font-heading font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed">{nextLabel}</button>}
   </div>;
 }

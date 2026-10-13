@@ -19,6 +19,22 @@ body {
   color: #231F20;
 }
 
+.post-test button {
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, scale 140ms ease, filter 140ms ease;
+}
+.post-test button:not(:disabled):active {
+  scale: 0.97;
+  filter: brightness(0.9);
+}
+.post-test button:focus-visible {
+  outline: 2px solid #BD214C;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-test button { transition: none; }
+  .post-test button:not(:disabled):active { scale: 1; }
+}
+
 @keyframes recap-progress-fill {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
