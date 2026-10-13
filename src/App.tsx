@@ -35,9 +35,10 @@ function ParticipantApp() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [saveState, setSaveState] = useState('');
   const [processing, setProcessing] = useState(false);
   const dirty = useRef(new Map<string, Answer>());
+  const answersRef = useRef<Record<string, Answer>>({});
+  const progressRef = useRef(0);
   const queue = useRef<Promise<void>>(Promise.resolve());
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const scrollArea = useRef<HTMLElement>(null);
@@ -46,7 +47,7 @@ function ParticipantApp() {
   const busyRef = useRef(false);
   const pages = useMemo(() => config ? pagesFor(config) : [], [config]);
   const page = pages[Math.min(step, Math.max(0, pages.length - 1))];
-  const applyParticipant = (p: Participant) => { setParticipant(p); setConfig(p.config); setName(p.name); setAnswers(p.answers); setStep(p.step); };
+  const applyParticipant = (p: Participant) => { setParticipant(p); setConfig(p.config); setName(p.name); answersRef.current = p.answers; progressRef.current = p.step; setAnswers(p.answers); setStep(p.step); };
   const load = async () => {
     setLoading(true); setError('');
     try {
@@ -61,47 +62,63 @@ function ParticipantApp() {
     const currentEpoch = epoch.current;
     const task = queue.current.catch(() => {}).then(async () => {
       if (currentEpoch !== epoch.current) return;
-      for (const [key, value] of [...dirty.current.entries()]) {
-        await request('answer', 'POST', { key, answer: value });
+      const entries = [...dirty.current.entries()];
+      await request('answers', 'POST', { answers: entries.map(([key, answer]) => ({ key, answer })), step: progressRef.current });
+      for (const [key, value] of entries) {
         if (dirty.current.get(key) === value) dirty.current.delete(key);
       }
-      if (mounted.current && currentEpoch === epoch.current) { setSaveState(dirty.current.size ? 'Menunggu penyimpanan…' : 'Tersimpan'); setError(''); }
+      if (mounted.current && currentEpoch === epoch.current) setError('');
     });
     queue.current = task; return task;
   };
   const changeAnswer = (key: string, value: Answer) => {
-    setAnswers(prev => ({ ...prev, [key]: value })); dirty.current.set(key, value); setSaveState('Menyimpan…');
+    answersRef.current = { ...answersRef.current, [key]: value };
+    setAnswers(answersRef.current); dirty.current.set(key, value);
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => { void flush().catch(e => { if (mounted.current) { setError(e.message); setSaveState('Belum tersimpan'); } }); }, 500);
+    timer.current = setTimeout(() => { void flush().catch(e => { if (mounted.current) setError(e.message); }); }, 2000);
   };
   const guarded = async (work: () => Promise<void>) => {
     if (busyRef.current) return; busyRef.current = true; setBusy(true); setError('');
-    try { await work(); } catch (e) { setError((e as Error).message); setSaveState('Belum tersimpan'); } finally { busyRef.current = false; setBusy(false); }
+    try { await work(); } catch (e) { setError((e as Error).message); } finally { busyRef.current = false; setBusy(false); }
   };
   const start = () => guarded(async () => {
     const p = await request<Participant>('session', 'POST', { name: name.trim() });
-    epoch.current++; dirty.current.clear(); applyParticipant(p); setSaveState('Tersimpan');
+    epoch.current++; dirty.current.clear(); applyParticipant(p);
   });
-  const move = (direction: number) => guarded(async () => {
-    await flush();
-    const savedAnswers = (await request<Participant>('session')).answers;
+  const move = async (direction: number) => {
+    if (busyRef.current) return;
+    const savedAnswers = answersRef.current;
     let next = Math.max(0, Math.min(pages.length - 1, step + direction));
     while (pages[next]?.kind === 'questions' && pages[next].questions!.every(q => q.skipWhen && JSON.stringify(savedAnswers[q.skipWhen.key]) === JSON.stringify(q.skipWhen.value))) {
-      for (const q of pages[next].questions!) await request('answer', 'POST', { key: q.key, answer: q.skipWhen!.answer });
+      for (const q of pages[next].questions!) changeAnswer(q.key, q.skipWhen!.answer);
       next += direction;
     }
-    await request('progress', 'POST', { step: next });
-    const p = await request<Participant>('session'); applyParticipant(p);
-    if (pages[next]?.kind === 'recapResult') setProcessing(true);
-  });
+    const target = pages[next];
+    const boundary = target?.kind === 'result' || target?.kind === 'recapResult' || target?.section?.key !== page?.section?.key;
+    if (!boundary) {
+      progressRef.current = next; setStep(next);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => { void flush().catch(e => { if (mounted.current) setError(e.message); }); }, 2000);
+      return;
+    }
+    const previous = progressRef.current;
+    await guarded(async () => {
+      progressRef.current = next;
+      try {
+        await flush();
+        const p = await request<Participant>('session'); applyParticipant(p);
+        if (target?.kind === 'recapResult') setProcessing(true);
+      } catch (e) { progressRef.current = previous; throw e; }
+    });
+  };
   const complete = async (email: string) => {
     await flush();
-    const p = await request<Participant>('complete', 'POST', { email }); applyParticipant(p); setSaveState('Tersimpan');
+    const p = await request<Participant>('complete', 'POST', { email }); applyParticipant(p);
   };
   const retake = () => guarded(async () => {
     await queue.current.catch(() => {});
     if (dirty.current.size) await flush();
-    epoch.current++; dirty.current.clear(); setParticipant(null); setAnswers({}); setStep(0); setSaveState('');
+    epoch.current++; dirty.current.clear(); answersRef.current = {}; progressRef.current = 0; setParticipant(null); setAnswers({}); setStep(0);
     setConfig(await request<QuizConfig>('config'));
   });
 
@@ -138,7 +155,6 @@ function ParticipantApp() {
         {page?.kind === 'result' && record && <ResultScreen submission={record} offer={config.offer} allAnswers={answers}
           certificateForm={<LeadForm initialName={participant.name} initialEmail={participant.email || ''} saved={participant.status === 'completed'} notice={config.certificateNotice} eligibility={config.certificateEligibility} onSubmit={contact => complete(contact.email)} />}
           onCtaClick={() => { void request('cta', 'POST', {}).catch(e => setError(e.message)); }} onRetake={() => void retake()} />}
-        {page?.kind !== 'result' && <p role="status" className="text-[10px] text-gray-500 pb-4">{busy ? 'Menyimpan…' : saveState}</p>}
       </>}
     </main>
     <footer className="shrink-0 py-2 text-center text-[10px] text-gray-400 border-t">© {new Date().getFullYear()} Boleh Belajar · {config.batch}</footer>

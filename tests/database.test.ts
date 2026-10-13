@@ -75,6 +75,13 @@ test('HTTP auth, CSRF, resume and protected CSV export',async()=>{
   const p=await start.json();assert.notEqual(p.score,100);
   const a=await fetch(base+'/api/answer',{method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({key:'feedback.clarity',answer:4})});assert.equal(a.status,200);
   const resumed=await (await fetch(base+'/api/session',{headers:{Cookie:cookie}})).json();assert.equal(resumed.answers['feedback.clarity'],4);
+  const batch=await fetch(base+'/api?route=answers',{method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({answers:[{key:'feedback.clarity',answer:5},{key:'feedback.expectations',answer:4}],step:2})});
+  assert.equal(batch.status,200);
+  const afterBatch=await (await fetch(base+'/api?route=session',{headers:{Cookie:cookie}})).json();
+  assert.equal(afterBatch.answers['feedback.clarity'],5);assert.equal(afterBatch.answers['feedback.expectations'],4);assert.equal(afterBatch.step,2);
+  const invalidBatch=await fetch(base+'/api?route=answers',{method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({answers:[{key:'feedback.clarity',answer:2},{key:'feedback.expectations',answer:99}],step:3})});
+  assert.equal(invalidBatch.status,400);
+  const afterRollback=await (await fetch(base+'/api?route=session',{headers:{Cookie:cookie}})).json();assert.equal(afterRollback.answers['feedback.clarity'],5);assert.equal(afterRollback.step,2);
   const login=await fetch(base+'/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'admin@example.test',password:'test-password-1234'})});assert.equal(login.status,200);
   const adminCookie=login.headers.get('set-cookie')!.split(';')[0];
   const exported=await fetch(base+'/api/admin/export',{headers:{Cookie:adminCookie}});assert.equal(exported.status,200);assert(exported.headers.get('content-type')!.includes('text/csv'));

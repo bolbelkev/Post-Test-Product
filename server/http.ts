@@ -53,6 +53,18 @@ export function createHandler(getDatabase: () => Database = database) {
       }
       if (route === 'session' && method === 'GET') return send(200, await readParticipant(db, sessionToken));
       if (route === 'answer' && method === 'POST') { await saveAnswer(db, sessionToken, body.key, body.answer); return send(200, { saved: true }); }
+      if (route === 'answers' && method === 'POST') {
+        if (!Array.isArray(body.answers) || body.answers.length > 200) throw new HttpError(400, 'Kumpulan jawaban tidak valid.');
+        const save = async (tx: Database) => {
+          for (const entry of body.answers) {
+            if (!entry || typeof entry.key !== 'string') throw new HttpError(400, 'Jawaban tidak valid.');
+            await saveAnswer(tx, sessionToken, entry.key, entry.answer);
+          }
+          await saveProgress(tx, sessionToken, body.step);
+        };
+        if (db.transaction) await db.transaction(save); else await save(db);
+        return send(200, { saved: true });
+      }
       if (route === 'progress' && method === 'POST') { await saveProgress(db, sessionToken, body.step); return send(200, { saved: true }); }
       if (route === 'complete' && method === 'POST') return send(200, await completeParticipant(db, sessionToken, body.email));
       if (route === 'cta' && method === 'POST') {

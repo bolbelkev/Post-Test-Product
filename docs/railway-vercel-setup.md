@@ -5,7 +5,7 @@
 - Frontend React/Vite, API Node di Vercel, PostgreSQL di Railway.
 - Semua nama, jawaban, email, progres, dan klik CTA dikirim ke database. Tidak ada penyimpanan jawaban di localStorage, sessionStorage, atau IndexedDB.
 - Cookie HttpOnly hanya berisi token acak untuk mengenali sesi, tanpa nama, email, atau jawaban. Sesi peserta berlaku 30 hari; sesi admin 12 jam.
-- Autosave 500 ms setelah perubahan; menekan Lanjut menunggu jawaban berhasil disimpan. Pilihan tunggal satu layar otomatis lanjut setelah berhasil disimpan. Rating/paragraf dan multi-select memakai Lanjut.
+- Jawaban ditampung sementara di memori halaman, lalu dikirim berkelompok setelah jeda 2 detik tanpa navigasi/perubahan. Perpindahan antarpertanyaan dalam satu bagian langsung berjalan. Perpindahan bagian dan halaman hasil menunggu penyimpanan selesai. Tidak ada indikator sukses penyimpanan per pertanyaan; kegagalan tetap ditampilkan dengan opsi coba lagi. Refresh/menutup halaman sebelum pengiriman selesai dapat menghilangkan isian yang belum terkirim.
 - Jawaban dan kunci divalidasi di server. Kunci recap tidak dikirim ke browser. Pengiriman email baru dinyatakan berhasil setelah transaksi database selesai.
 - Admin di `/admin`: login, daftar peserta, editor pertanyaan/kunci/urutan, konten awal, voucher/benefit/link, dan CSV.
 - Salinan konfigurasi pada setiap sesi melindungi data lama ketika admin mengedit. Ini bukan fitur pengelolaan versi; tidak ada UI versi atau multi-mini-class.
