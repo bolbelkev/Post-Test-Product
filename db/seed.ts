@@ -12,7 +12,7 @@ export const initialConfig: QuizConfig = {
     image: '/images/tambahan-diskon-5-persen-mini-class.png', imageAlt: 'Tambahan diskon 5% khusus peserta Mini Class',
     ctaText: 'Lihat Program Bootcamp Performance Marketing',
     ctaUrl: 'https://wa.me/6281944365758?text=halo%20Minbel%2C%20saya%20mau%20klaim%20promo%20post%20test%20mini%20class%21',
-    benefits: ['Praktik hands on handle real brand untuk tambah porfolio', 'dibimbing instruktur praktisi', 'Agency based curriculum', 'bisa dicicil 4x'],
+    benefits: ['Praktik hands on handle real brand untuk tambah porfolio', 'dibimbing instruktur praktisi', 'Agency based curriculum', 'bisa dicicil up to 3x'],
     rules: [],
   },
   baseScore: 70,
