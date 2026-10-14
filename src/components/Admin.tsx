@@ -10,6 +10,7 @@ export function Admin() {
   const [quizzes,setQuizzes]=useState<QuizRow[]>([]);
   const [selected,setSelected]=useState('pm');
   const [duplicate,setDuplicate]=useState(false);
+  const [duplicateSource,setDuplicateSource]=useState('pm');
   const [newTitle,setNewTitle]=useState('');const [newBatch,setNewBatch]=useState('');const [newSlug,setNewSlug]=useState('');
   const scoped=<T,>(path:string,method='GET',body?:unknown)=>request<T>(path+(path.includes('?')?'&':'?')+'quiz='+encodeURIComponent(selected),method,body);
   const loadQuizzes=async()=>setQuizzes(await request<QuizRow[]>('admin/quizzes'));
@@ -57,29 +58,35 @@ export function Admin() {
   if(!config)return null;
   return <main className="max-w-5xl mx-auto p-4 sm:p-8 space-y-6">
     <header className="flex flex-wrap justify-between items-center gap-3"><h1 className="font-heading text-xl font-bold">Admin Post Test</h1><button className="text-sm underline" onClick={()=>void run(async()=>{await request('admin/logout','POST',{});setLogin(false);setConfig(null);})}>Logout</button></header>
-    <section className="border rounded-2xl p-4 space-y-3">
+    <nav className="flex flex-wrap gap-2">{[['links','Kelola link post test'],['participants','Data peserta'],['content','Konten'],['questions','Pertanyaan'],['offer','Penawaran'],['advanced','Pengaturan lanjutan']].map(([key,label])=><button key={key} className={tab===key?buttonClass:'px-4 py-2 border rounded-lg text-sm'} onClick={()=>{if(tab==='advanced'&&dirty&&!confirm('Teks pengaturan lanjutan belum disimpan. Pindah tab?'))return;try{if(key==='advanced')setAdvanced(JSON.stringify({...config,offer:{...config.offer,rules:JSON.parse(rules)}},null,2));setTab(key);}catch{setMessage('Format aturan benefit belum valid. Periksa sebelum membuka pengaturan lanjutan.');}}}>{label}</button>)}</nav>
+    {message&&<p role="status" className="text-sm rounded-lg bg-[#F9EDDE]/50 p-3">{message}</p>}
+    {tab==='links'&&<section className="border rounded-2xl p-4 space-y-3">
       <h2 className="font-bold">Kelola link post test</h2>
-      <div className="flex flex-wrap gap-3 items-center"><label className="text-sm">Post test <select disabled={busy} className="border rounded-lg p-2" value={selected} onChange={e=>{if(dirty&&!confirm('Ada perubahan belum disimpan. Pindah post test?'))return;setSelected(e.target.value);setPage(1);setSearch('');setStatus('');setDuplicate(false);}}>{quizzes.map(q=><option key={q.slug} value={q.slug}>{q.batch} — {q.title} ({q.active?'Aktif':'Nonaktif'})</option>)}</select></label>
-      <button disabled={busy} className={buttonClass} onClick={()=>void run(async()=>{await navigator.clipboard.writeText(`${location.origin}/test/${selected}`);setMessage('Link post test disalin.');})}>Salin link</button>
-      <button disabled={busy||dirty} className={buttonClass} onClick={()=>void run(async()=>{await scoped('admin/active','PUT',{active:!config.active,revision});await loadConfig();await loadQuizzes();setMessage(config.active?'Link dinonaktifkan. Pengisian dihentikan; data tetap tersimpan.':'Link diaktifkan.');})}>{config.active?'Nonaktifkan':'Aktifkan'}</button>
-      <button disabled={busy||dirty} className="border rounded-lg px-4 py-2 text-sm" onClick={()=>{setDuplicate(!duplicate);setNewTitle(config.title);setNewBatch(config.batch+' (salinan)');setNewSlug('');}}>Duplikasi</button></div>
-      <p className="text-xs break-all">Link: {location.origin}/test/{selected}</p>
+      <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b text-left">{['Nama test','Link post test','Status','Aksi'].map(label=><th key={label} className="p-2">{label}</th>)}</tr></thead><tbody>{quizzes.map(q=><tr key={q.slug} className="border-b align-top">
+        <td className="p-2 min-w-44"><p className="font-semibold">{q.title}</p><p className="text-xs text-gray-500 mt-1">{q.batch}</p></td>
+        <td className="p-2"><a className="underline break-all" href={`/test/${q.slug}`} target="_blank" rel="noopener noreferrer">{location.origin}/test/{q.slug}</a><button disabled={busy} className="block mt-2 text-xs underline" onClick={()=>void run(async()=>{await navigator.clipboard.writeText(`${location.origin}/test/${q.slug}`);setMessage('Link post test disalin.');})}>Salin link</button></td>
+        <td className="p-2"><span className={q.active?'text-emerald-700':'text-gray-500'}>{q.active?'Aktif':'Nonaktif'}</span></td>
+        <td className="p-2"><div className="flex flex-wrap gap-2 min-w-56">
+          <button disabled={busy||dirty} className={buttonClass} onClick={()=>void run(async()=>{await request('admin/active?quiz='+encodeURIComponent(q.slug),'PUT',{active:!q.active,revision:q.revision});if(q.slug===selected)await loadConfig();await loadQuizzes();setMessage(q.active?'Link dinonaktifkan. Data tetap tersimpan.':'Link diaktifkan.');})}>{q.active?'Nonaktifkan':'Aktifkan'}</button>
+          <button disabled={busy} className="border rounded-lg px-3 py-2 text-xs" onClick={()=>{if(dirty&&!confirm('Ada perubahan belum disimpan. Pindah post test?'))return;setSelected(q.slug);setPage(1);setSearch('');setStatus('');setDuplicate(false);setTab('participants');}}>Kelola data & konten</button>
+          <button disabled={busy||dirty} className="border rounded-lg px-3 py-2 text-xs" onClick={()=>{setDuplicate(true);setDuplicateSource(q.slug);setNewTitle(q.title);setNewBatch(q.batch+' (salinan)');setNewSlug('');}}>Duplikasi</button>
+        </div></td>
+      </tr>)}</tbody></table></div>
       <p className="text-xs text-gray-500">Nonaktif menghentikan pengisian, termasuk sesi yang masih berjalan. Peserta yang sudah selesai tetap dapat melihat hasil. Tidak ada jadwal otomatis.</p>
-      {duplicate&&<form className="space-y-3 border-t pt-3" onSubmit={e=>{e.preventDefault();void run(async()=>{const created=await scoped<{slug:string}>('admin/duplicate','POST',{slug:newSlug,title:newTitle,batch:newBatch});await loadQuizzes();setSelected(created.slug);setDuplicate(false);setMessage('Duplikat dibuat nonaktif. Edit kontennya, lalu aktifkan saat siap.');});}}>
+      {duplicate&&<form className="space-y-3 border-t pt-3" onSubmit={e=>{e.preventDefault();void run(async()=>{const created=await request<{slug:string}>('admin/duplicate?quiz='+encodeURIComponent(duplicateSource),'POST',{slug:newSlug,title:newTitle,batch:newBatch});await loadQuizzes();setSelected(created.slug);setDuplicate(false);setMessage('Duplikat dibuat nonaktif. Edit kontennya, lalu aktifkan saat siap.');});}}>
         {textField('Judul salinan',newTitle,setNewTitle)}{textField('Nama batch baru',newBatch,setNewBatch)}
         <label className="block text-sm">Nama link baru<input required pattern="[a-z0-9][a-z0-9-]{0,63}" maxLength={64} placeholder="contoh: pm-batch-7" className={inputClass} value={newSlug} onChange={e=>setNewSlug(e.target.value)}/></label>
         <button disabled={busy} className={buttonClass}>Buat duplikat</button>
       </form>}
-    </section>
-    <nav className="flex flex-wrap gap-2">{[['participants','Data peserta'],['content','Konten'],['questions','Pertanyaan'],['offer','Penawaran'],['advanced','Pengaturan lanjutan']].map(([key,label])=><button key={key} className={tab===key?buttonClass:'px-4 py-2 border rounded-lg text-sm'} onClick={()=>{if(tab==='advanced'&&dirty&&!confirm('Teks pengaturan lanjutan belum disimpan. Pindah tab?'))return;setTab(key);if(key==='advanced')setAdvanced(JSON.stringify({...config,offer:{...config.offer,rules:JSON.parse(rules)}},null,2));}}>{label}</button>)}</nav>
-    {message&&<p role="status" className="text-sm rounded-lg bg-[#F9EDDE]/50 p-3">{message}</p>}
+    </section>}
+    {tab!=='links'&&<p className="text-sm text-gray-600">Post test: <strong>{config.title} — {config.batch}</strong> <button className="underline ml-2" onClick={()=>setTab('links')}>Pilih post test lain</button></p>}
     {tab==='participants'?<section className="space-y-4">
       <div className="flex flex-wrap gap-3"><select className="border rounded-lg px-3 py-2 text-sm" value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}><option value="">Semua peserta</option><option value="completed">Email tersimpan</option><option value="in_progress">Belum melengkapi email</option></select><input className="border rounded-lg px-3 py-2 text-sm" placeholder="Cari nama/email" value={search} onChange={e=>{setSearch(e.target.value);setPage(1);}}/><button disabled={busy} className={buttonClass} onClick={()=>void download()}>Export CSV</button></div>
       <p className="text-xs text-gray-500">Data dan export hanya untuk post test yang dipilih. Export mengikuti filter status, maksimal 10.000 sesi terbaru. Pencarian nama/email hanya memfilter tabel di layar. Kehadiran day 1–3 diperiksa manual oleh tim.</p>
       <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b text-left">{['Nama sertifikat','Email','Batch','Status','Recap','Asesmen','Mulai'].map(t=><th key={t} className="p-2">{t}</th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.id} className="border-b"><td className="p-2">{row.name}</td><td className="p-2">{row.email||'—'}</td><td className="p-2">{row.batch}</td><td className="p-2">{row.status==='completed'?'Email tersimpan':'Belum melengkapi email'}</td><td className="p-2">{row.status==='completed'?row.recap_correct+'/'+row.recap_total:'—'}</td><td className="p-2">{row.status==='completed'?row.match_score:'—'}</td><td className="p-2">{new Date(row.created_at).toLocaleString('id-ID')}</td></tr>)}</tbody></table></div>
       {!rows.length&&<p className="text-sm">Belum ada data sesuai filter.</p>}
       <div className="flex gap-3"><button disabled={page===1} onClick={()=>setPage(page-1)} className="underline disabled:opacity-40">Sebelumnya</button><span>Halaman {page}</span><button disabled={rows.length<50} onClick={()=>setPage(page+1)} className="underline disabled:opacity-40">Berikutnya</button></div>
-    </section>:<>
+    </section>:tab!=='links'&&<>
       <fieldset disabled={busy} className="space-y-5">
         {tab==='content'&&<>
           {textField('Judul post test',config.title,v=>edit({...config,title:v}))}
