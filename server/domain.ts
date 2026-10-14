@@ -27,15 +27,28 @@ export function scores(config: QuizConfig, raw: Record<string, Answer>) {
   const answers = effectiveAnswers(config, raw);
   const recap = config.sections.filter(s => s.kind === 'recap').flatMap(s => s.questions);
   let score = config.baseScore;
-  for (const q of allQuestions(config)) {
+  let minimum = config.baseScore;
+  let maximum = config.baseScore;
+  for (const q of config.sections.filter(s => s.kind !== 'recap').flatMap(s => s.questions)) {
+    const possible = q.type === 'single' && q.points
+      ? [...q.options.map(option => Object.hasOwn(q.points!, option) ? q.points![option] : 0), ...(q.allowOther ? [0] : [])]
+      : q.type === 'multi' && q.countPoints
+        ? Array.from({ length: q.options.filter(o=>o!=='Belum pernah satupun').length + 1 }, (_, count) => q.countPoints![count] ?? 0)
+        : [0];
+    minimum += Math.min(...possible);
+    maximum += Math.max(...possible);
     const a = answers[q.key];
     if (typeof a === 'string' && q.points && Object.hasOwn(q.points, a)) score += q.points[a];
     if (Array.isArray(a) && q.countPoints) score += q.countPoints[a.includes('Belum pernah satupun') ? 0 : a.length] ?? 0;
   }
-  const finalScore = Math.max(0, Math.min(100, Math.round(score)));
+  // Recap knowledge has 70% weight; self-reported readiness has 30%.
+  const readiness = maximum > minimum ? Math.max(0, Math.min(1, (score - minimum) / (maximum - minimum))) : 0;
+  const recapCorrect = recap.filter(q => typeof q.correctAnswer === 'string' && q.correctAnswer === answers[q.key]).length;
+  const knowledge = recap.length ? recapCorrect / recap.length : 0;
+  const finalScore = Math.round(40 + (knowledge * 0.7 + readiness * 0.3) * 45);
   const goal = String(answers.p1_goal);
   const narrative = (Object.hasOwn(config.narratives, goal) ? config.narratives[goal] : config.defaultNarrative).replaceAll('{score}', String(finalScore));
-  return { score: finalScore, recapCorrect: recap.filter(q => q.correctAnswer === answers[q.key]).length, recapTotal: recap.length, narrative };
+  return { score: finalScore, recapCorrect, recapTotal: recap.length, narrative };
 }
 export function validateConfig(raw: unknown): QuizConfig {
   if (!raw || typeof raw !== 'object') throw new HttpError(400, 'Konfigurasi tidak valid.');

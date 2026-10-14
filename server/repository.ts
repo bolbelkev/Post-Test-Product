@@ -82,9 +82,11 @@ export async function updateConfig(db: Database, raw: unknown, revision: unknown
 }
 export async function listParticipants(db: Database, page: number, status: string, search: string, slug = 'pm') {
   const filter = status === 'completed' || status === 'in_progress' ? status : '';
-  return (await db.query(`SELECT id,name,email,status,step,recap_correct,recap_total,match_score,created_at,completed_at,config_snapshot->>'batch' AS batch
+  const rows = (await db.query(`SELECT id,name,email,status,step,recap_correct,recap_total,match_score,created_at,completed_at,config_snapshot,config_snapshot->>'batch' AS batch,
+    (SELECT COALESCE(jsonb_object_agg(question_key,answer),'{}'::jsonb) FROM participant_answers WHERE session_id=participant_sessions.id) AS saved_answers
     FROM participant_sessions WHERE quiz_slug=$4 AND ($1='' OR status=$1) AND ($2='' OR name ILIKE $2 OR email ILIKE $2)
     ORDER BY created_at DESC,id LIMIT 50 OFFSET $3`, [filter, search ? `%${search.slice(0,150)}%` : '', (page - 1) * 50, slug])).rows;
+  return rows.map(({ config_snapshot, saved_answers, ...row }) => ({ ...row, match_score: row.status === 'completed' ? scores(config_snapshot, saved_answers).score : row.match_score }));
 }
 export async function exportCsv(db: Database, status: string, slug = 'pm') {
   const rows = (await db.query(`SELECT s.*,COALESCE(jsonb_object_agg(a.question_key,jsonb_build_object('question',a.question_snapshot,'answer',a.answer)) FILTER(WHERE a.question_key IS NOT NULL),'{}'::jsonb) AS responses

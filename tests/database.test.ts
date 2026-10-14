@@ -7,10 +7,25 @@ import { PGlite } from '@electric-sql/pglite';
 import { initialConfig } from '../db/seed.ts';
 import { createHandler } from '../server/http.ts';
 import { hashPassword } from '../server/security.ts';
-import { allQuestions, validateConfig, publicConfig, csvCell } from '../server/domain.ts';
+import { allQuestions, validateConfig, publicConfig, csvCell, scores } from '../server/domain.ts';
 import { startParticipant, saveAnswer, readParticipant, completeParticipant, updateConfig, exportCsv } from '../server/repository.ts';
 import type { Database } from '../server/db.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('final readiness combines recap 70% and self-report 30% within 40–85',()=>{
+  const low={p1_pernah_iklan:'Belum',p2_skill_utama:'Tidak setuju',p2_dampak_penghasilan:'Tidak setuju',p2_kemampuan_sekarang:'Pemula banget',p2_tools:['Belum pernah satupun'],p2_tempat_penerapan:'Belum tahu'};
+  const high={p1_pernah_iklan:'Sudah',p2_skill_utama:'Setuju',p2_dampak_penghasilan:'Setuju',p2_kemampuan_sekarang:'Sangat mahir',p2_tools:['Meta Ads','Google Ads','TikTok Ads'],p2_tempat_penerapan:'Agency'};
+  assert.equal(scores(initialConfig,low).score,40);assert.equal(scores(initialConfig,high).score,54);
+  const recap=initialConfig.sections.find(s=>s.kind==='recap')!.questions;
+  const correct=Object.fromEntries(recap.map(q=>[q.key,q.correctAnswer!]));
+  assert.equal(scores(initialConfig,{...low,...correct}).score,72);
+  assert.equal(scores(initialConfig,{...high,...correct}).score,85);
+  const half=Object.fromEntries(recap.slice(0,10).map(q=>[q.key,q.correctAnswer!]));
+  assert.equal(scores(initialConfig,{...high,...half}).score,69);
+  const expanded=structuredClone(initialConfig);expanded.sections.find(s=>s.kind==='recap')!.questions.push({...recap[0],key:'recap.extra'});
+  assert(scores(expanded,{...high,...correct}).score<85);
+  assert.equal(scores(initialConfig,{...low,...correct}).recapCorrect,20);
+  assert.equal(scores(initialConfig,{}).score,40);
+});
 test('multiple quiz links isolate sessions and exports; inactive links reject existing and new submissions',async()=>{
   const api=async(route:string,quiz:string,cookie='',method='GET',body?:unknown)=>fetch(base+'/api?route='+encodeURIComponent(route)+'&quiz='+quiz,{method,headers:{Cookie:cookie,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});
   const login=await api('admin/login','pm','','POST',{email:'admin@example.test',password:'test-password-1234'});
