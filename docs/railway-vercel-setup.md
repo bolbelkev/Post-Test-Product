@@ -8,7 +8,7 @@
 - Jawaban ditampung sementara di memori halaman, lalu dikirim berkelompok setelah jeda 2 detik tanpa navigasi/perubahan. Perpindahan antarpertanyaan dalam satu bagian langsung berjalan. Perpindahan bagian dan halaman hasil menunggu penyimpanan selesai. Tidak ada indikator sukses penyimpanan per pertanyaan; kegagalan tetap ditampilkan dengan opsi coba lagi. Refresh/menutup halaman sebelum pengiriman selesai dapat menghilangkan isian yang belum terkirim.
 - Jawaban dan kunci divalidasi di server. Kunci recap tidak dikirim ke browser. Pengiriman email baru dinyatakan berhasil setelah transaksi database selesai.
 - Admin di `/admin`: login, daftar peserta, editor pertanyaan/kunci/urutan, konten awal, voucher/benefit/link, dan CSV.
-- Salinan konfigurasi pada setiap sesi melindungi data lama ketika admin mengedit. Ini bukan fitur pengelolaan versi; tidak ada UI versi atau multi-mini-class.
+- Salinan konfigurasi pada setiap sesi melindungi data lama ketika admin mengedit. Admin dapat menduplikasi post test, menyalin link, mengaktifkan/nonaktifkan pengisian, dan mengekspor data per post test. Setiap duplikat menyalin struktur/pertanyaan/penawaran tanpa peserta, dimulai nonaktif, dan dapat diedit untuk kelas atau batch lain. Tidak ada jadwal otomatis atau UI pengelolaan versi.
 - Nama dan email dalam CSV digunakan tim Bolbel untuk sertifikat manual. Kehadiran day 1–3 tidak diverifikasi otomatis.
 
 ## 1. Konfigurasi koneksi lokal

@@ -52,7 +52,7 @@ function ParticipantApp() {
     setLoading(true); setError('');
     try {
       try { applyParticipant(await request<Participant>('session')); }
-      catch (e) { if (e instanceof ApiError && e.status === 401) setConfig(await request<QuizConfig>('config')); else throw e; }
+      catch (e) { if (e instanceof ApiError && [401,403].includes(e.status)) setConfig(await request<QuizConfig>('config')); else throw e; }
     } catch (e) { setError((e as Error).message); } finally { setLoading(false); }
   };
   useEffect(() => { mounted.current = true; void load(); return () => { mounted.current = false; clearTimeout(timer.current); }; }, []);
@@ -124,6 +124,7 @@ function ParticipantApp() {
 
   if (loading) return <div className="p-8 text-center text-sm">Memuat post test…</div>;
   if (!config) return <div className="max-w-lg mx-auto p-6"><p role="alert">{error || 'Post test belum tersedia.'}</p><button className="mt-4 underline" onClick={() => void load()}>Coba lagi</button></div>;
+  if (!config.active && participant?.status !== 'completed') return <div className="max-w-lg mx-auto p-8 text-center"><Header /><h1 className="font-heading text-xl font-bold mt-6">Post test sedang ditutup</h1><p className="text-sm mt-3">Pengisian belum tersedia. Silakan hubungi tim Boleh Belajar.</p></div>;
   const sectionNumber = page?.section ? config.sections.findIndex(s => s.key === page.section!.key) + 1 : config.sections.length;
   const sectionPages = pages.filter(p => p.section?.key === page?.section?.key && p.kind === 'questions');
   const sectionPosition = sectionPages.indexOf(page) + 1;

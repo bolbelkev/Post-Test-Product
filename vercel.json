@@ -4,7 +4,8 @@
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/:path+", "destination": "/api?route=:path+" },
-    { "source": "/admin", "destination": "/index.html" }
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/test/:slug", "destination": "/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [

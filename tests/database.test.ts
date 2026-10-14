@@ -11,6 +11,30 @@ import { allQuestions, validateConfig, publicConfig, csvCell } from '../server/d
 import { startParticipant, saveAnswer, readParticipant, completeParticipant, updateConfig, exportCsv } from '../server/repository.ts';
 import type { Database } from '../server/db.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('multiple quiz links isolate sessions and exports; inactive links reject existing and new submissions',async()=>{
+  const api=async(route:string,quiz:string,cookie='',method='GET',body?:unknown)=>fetch(base+'/api?route='+encodeURIComponent(route)+'&quiz='+quiz,{method,headers:{Cookie:cookie,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});
+  const login=await api('admin/login','pm','','POST',{email:'admin@example.test',password:'test-password-1234'});
+  const admin=login.headers.get('set-cookie')!.split(';')[0];
+  assert.equal((await api('admin/duplicate','pm','','POST',{})).status,401);
+  assert.equal((await api('admin/duplicate','pm',admin,'POST',{slug:'pm-new',title:'PM baru',batch:'Batch baru'})).status,201);
+  assert.equal((await api('admin/duplicate','pm',admin,'POST',{slug:'pm-new',title:'PM baru',batch:'Batch baru'})).status,409);
+  assert.equal((await api('session','pm-new','','POST',{name:'Peserta baru'})).status,403);
+  const cfg=await (await api('admin/config','pm-new',admin)).json();assert.equal(cfg.config.active,false);
+  assert.equal((await api('admin/active','pm-new',admin,'PUT',{active:true,revision:cfg.revision})).status,200);
+  const start=await api('session','pm-new','','POST',{name:'Peserta khusus batch baru'});assert.equal(start.status,201);
+  const cookie=start.headers.get('set-cookie')!.split(';')[0];assert(cookie.startsWith('bb_participant_pm-new='));
+  assert.equal((await api('answer','pm-new',cookie,'POST',{key:'feedback.clarity',answer:4})).status,200);
+  assert.equal((await api('session','pm',cookie)).status,401);
+  const rows=await (await api('admin/participants','pm-new',admin)).json();assert.equal(rows.length,1);assert.equal(rows[0].name,'Peserta khusus batch baru');
+  const csv=await (await api('admin/export','pm-new',admin)).text();assert(csv.includes('Peserta khusus batch baru'));assert(!csv.includes('participant@example.test'));
+  assert(!(await exportCsv(db,'','pm')).includes('Peserta khusus batch baru'));
+  const live=await (await api('admin/config','pm-new',admin)).json();
+  await api('admin/active','pm-new',admin,'PUT',{active:false,revision:live.revision});
+  assert.equal((await api('answer','pm-new',cookie,'POST',{key:'feedback.clarity',answer:5})).status,403);
+  assert.equal((await api('complete','pm-new',cookie,'POST',{email:'new@example.test'})).status,403);
+  assert.equal((await api('session','pm-new',cookie)).status,403);
+  assert.equal((await api('admin/participants','pm-new',admin)).status,200);
+});
 before(async()=>{
   engine=new PGlite();
   await engine.exec(await readFile(new URL('../db/migrations/001_initial.sql',import.meta.url),'utf8'));

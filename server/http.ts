@@ -3,6 +3,7 @@ import { database, type Database } from './db.ts';
 import { cookieValue, hash, makeCookie, token, verifyPassword, hashPassword } from './security.ts';
 import { HttpError, publicConfig } from './domain.ts';
 import { startParticipant, readParticipant, saveAnswer, saveProgress, completeParticipant, sessionRow, loadConfig, updateConfig, listParticipants, exportCsv } from './repository.ts';
+import { quizSlug, listQuizzes, duplicateQuiz, setQuizActive } from './repository.ts';
 
 async function readBody(req: IncomingMessage & { body?: unknown }) {
   if (req.body !== undefined) {
@@ -39,16 +40,24 @@ export function createHandler(getDatabase: () => Database = database) {
         if (!String(req.headers['content-type']).startsWith('application/json')) throw new HttpError(415, 'Gunakan application/json.');
       }
       const db = getDatabase();
-      const sessionToken = cookieValue(req.headers.cookie, 'bb_participant');
+      const slug = quizSlug(url.searchParams.get('quiz') || 'pm');
+      const participantCookie = slug === 'pm' ? 'bb_participant' : `bb_participant_${slug}`;
+      const sessionToken = cookieValue(req.headers.cookie, participantCookie);
       const body = method === 'GET' ? {} : await readBody(req);
       if (!body || typeof body !== 'object' || Array.isArray(body)) throw new HttpError(400, 'Body request harus berupa object.');
-      if (route === 'config' && method === 'GET') return send(200, publicConfig((await loadConfig(db)).config));
+      if (route === 'config' && method === 'GET') return send(200, publicConfig((await loadConfig(db, slug)).config));
+      if (['session','answer','answers','progress','complete','cta'].includes(route) && !(route === 'session' && method === 'POST')) {
+        const session = await sessionRow(db, sessionToken);
+        if (session.quiz_slug !== slug) throw new HttpError(401, 'Sesi tidak sesuai link post test.');
+        const live = (await loadConfig(db, slug)).config;
+        if (!live.active && session.status !== 'completed') throw new HttpError(403, 'Post test sedang ditutup.');
+      }
       if (route === 'session' && method === 'POST') {
         // Shared DB limit applies across Vercel instances; cookies hold only a random identifier.
         const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
         await limit(db, `start:${hash(ip)}`, 2000);
-        const result = await startParticipant(db, body.name);
-        res.setHeader('Set-Cookie', makeCookie('bb_participant', result.sessionToken, 30*86400));
+        const result = await startParticipant(db, body.name, slug);
+        res.setHeader('Set-Cookie', makeCookie(participantCookie, result.sessionToken, 30*86400));
         return send(201, result.participant);
       }
       if (route === 'session' && method === 'GET') return send(200, await readParticipant(db, sessionToken));
@@ -89,19 +98,22 @@ export function createHandler(getDatabase: () => Database = database) {
         const adminToken = cookieValue(req.headers.cookie, 'bb_admin');
         const admin = adminToken && (await db.query('SELECT admin_id FROM admin_sessions WHERE token_hash=$1 AND expires_at>now()',[hash(adminToken)])).rows[0];
         if (!admin) throw new HttpError(401,'Silakan login admin.');
+        if (route === 'admin/quizzes' && method === 'GET') return send(200, await listQuizzes(db));
+        if (route === 'admin/duplicate' && method === 'POST') return send(201, await duplicateQuiz(db, slug, body));
+        if (route === 'admin/active' && method === 'PUT') return send(200, await setQuizActive(db, slug, body.active, body.revision));
         if (route === 'admin/logout' && method === 'POST') {
           await db.query('DELETE FROM admin_sessions WHERE token_hash=$1', [hash(adminToken!)]);
           res.setHeader('Set-Cookie',makeCookie('bb_admin','',0)); return send(200,{ loggedOut:true });
         }
-        if (route === 'admin/config' && method === 'GET') return send(200,await loadConfig(db));
-        if (route === 'admin/config' && method === 'PUT') return send(200,await updateConfig(db,body.config,body.revision));
+        if (route === 'admin/config' && method === 'GET') return send(200,await loadConfig(db, slug));
+        if (route === 'admin/config' && method === 'PUT') return send(200,await updateConfig(db,body.config,body.revision, slug));
         if (route === 'admin/participants' && method === 'GET') {
           const page = Math.max(1,Math.min(10000,Number(url.searchParams.get('page')) || 1));
-          return send(200,await listParticipants(db,Math.floor(page),url.searchParams.get('status') || '',url.searchParams.get('search') || ''));
+          return send(200,await listParticipants(db,Math.floor(page),url.searchParams.get('status') || '',url.searchParams.get('search') || '',slug));
         }
         if (route === 'admin/export' && method === 'GET') {
-          const csv = await exportCsv(db,url.searchParams.get('status') || '');
-          res.statusCode=200;res.setHeader('Content-Type','text/csv; charset=utf-8');res.setHeader('Content-Disposition','attachment; filename="peserta-post-test-pm.csv"'); return res.end(csv);
+          const csv = await exportCsv(db,url.searchParams.get('status') || '',slug);
+          res.statusCode=200;res.setHeader('Content-Type','text/csv; charset=utf-8');res.setHeader('Content-Disposition',`attachment; filename="peserta-post-test-${slug}.csv"`); return res.end(csv);
         }
       }
       throw new HttpError(404, 'Endpoint tidak ditemukan.');
