@@ -1,0 +1,508 @@
+{
+  "batch": "Marketplace Batch 3–4",
+  "offer": {
+    "image": "/images/tambahan-diskon-5-persen-mini-class.png",
+    "rules": [],
+    "title": "Bootcamp Marketplace — Boleh Belajar",
+    "ctaUrl": "https://wa.me/6281944365758?text=halo%20Minbel%2C%20saya%20mau%20klaim%20promo%20post%20test%20mini%20class!",
+    "ctaText": "Lihat Program Bootcamp Marketplace",
+    "benefits": [
+      "Praktik hands on handle real brand untuk tambah porfolio",
+      "dibimbing instruktur praktisi",
+      "Agency based curriculum",
+      "bisa dicicil up to 3x"
+    ],
+    "imageAlt": "Tambahan diskon 5% khusus peserta Mini Class"
+  },
+  "title": "Post Test Mini Class Marketplace",
+  "active": false,
+  "sections": [
+    {
+      "key": "profile",
+      "kind": "profile",
+      "title": "Profiling singkat",
+      "perPage": 1,
+      "questions": [
+        {
+          "key": "p1_pernah_iklan",
+          "text": "Sudah pernah mengelola toko di marketplace sebelumnya?",
+          "type": "single",
+          "points": {
+            "Belum": 2,
+            "Sudah": 4
+          },
+          "options": [
+            "Sudah",
+            "Belum"
+          ],
+          "required": true
+        },
+        {
+          "key": "p1_usia",
+          "text": "Berapa rentang usia kamu saat ini?",
+          "type": "single",
+          "options": [
+            "19-23",
+            "24-29",
+            "30-35",
+            ">35"
+          ],
+          "required": true
+        },
+        {
+          "key": "p1_pekerjaan",
+          "text": "Pekerjaan kamu saat ini?",
+          "type": "single",
+          "options": [
+            "Pekerja kantoran",
+            "Freelance",
+            "Pemilik bisnis",
+            "Fresh graduate"
+          ],
+          "required": true
+        },
+        {
+          "key": "p1_goal",
+          "text": "Goal utama kamu mengikuti Mini Class Marketplace?",
+          "type": "single",
+          "options": [
+            "Cari pekerjaan pertama",
+            "Bikin bisnis",
+            "Switch career",
+            "Upskill untuk kebutuhan kerjaan"
+          ],
+          "required": true,
+          "allowOther": true
+        }
+      ]
+    },
+    {
+      "key": "feedback",
+      "kind": "feedback",
+      "title": "Feedback mini class",
+      "perPage": 2,
+      "questions": [
+        {
+          "key": "feedback.clarity",
+          "text": "Materi disampaikan dengan jelas, terstruktur, dan mudah dipahami.",
+          "type": "rating",
+          "options": [],
+          "required": true
+        },
+        {
+          "key": "feedback.expectations",
+          "text": "Materi kelas sesuai dengan ekspektasi saya.",
+          "type": "rating",
+          "options": [],
+          "required": true
+        },
+        {
+          "key": "feedback.interaction",
+          "text": "Interaksi dan sesi tanya jawab berjalan dengan baik.",
+          "type": "rating",
+          "options": [],
+          "required": true
+        },
+        {
+          "key": "feedback.duration",
+          "text": "Bagaimana menurutmu durasi kelas ini?",
+          "type": "single",
+          "options": [
+            "Terlalu singkat",
+            "Pas",
+            "Terlalu panjang"
+          ],
+          "required": true
+        },
+        {
+          "key": "feedback.insight",
+          "text": "Apa insight atau hal paling bermanfaat yang kamu dapatkan?",
+          "type": "text",
+          "options": [],
+          "required": false
+        },
+        {
+          "key": "feedback.suggestions",
+          "text": "Apa saranmu untuk kelas berikutnya?",
+          "type": "text",
+          "options": [],
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "recap",
+      "kind": "recap",
+      "title": "Recap materi",
+      "perPage": 1,
+      "questions": [
+        {
+          "key": "recap.marketplace.1",
+          "text": "Fungsi utama marketplace sebagai sebuah platform adalah...",
+          "options": [
+            "Memproduksi seluruh barang yang dijual seller",
+            "Mempertemukan seller dan buyer dalam satu ekosistem transaksi",
+            "Menggantikan seluruh kegiatan digital marketing sebuah brand",
+            "Mengatur seluruh harga produk yang dijual seller"
+          ],
+          "correctAnswer": "Mempertemukan seller dan buyer dalam satu ekosistem transaksi",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.2",
+          "text": "Salah satu perbedaan utama e-commerce milik brand dengan marketplace adalah...",
+          "options": [
+            "E-commerce selalu memiliki banyak penjual",
+            "Marketplace memberikan kebebasan penuh terhadap tampilan dan fitur",
+            "E-commerce memberikan kontrol branding yang lebih penuh kepada brand",
+            "Marketplace tidak memiliki sumber traffic"
+          ],
+          "correctAnswer": "E-commerce memberikan kontrol branding yang lebih penuh kepada brand",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.3",
+          "text": "Urutan customer journey di marketplace yang sesuai dengan materi adalah...",
+          "options": [
+            "Consideration → Awareness → Conversion → Post-Conversion",
+            "Awareness → Conversion → Consideration → Post-Conversion",
+            "Awareness → Consideration → Conversion → Post-Conversion",
+            "Conversion → Awareness → Consideration → Post-Conversion"
+          ],
+          "correctAnswer": "Awareness → Consideration → Conversion → Post-Conversion",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.4",
+          "text": "Pada tahap Consideration, pembeli biasanya mengevaluasi hal-hal berikut, kecuali...",
+          "options": [
+            "Foto dan video produk",
+            "Harga dan promo",
+            "Rating dan ulasan",
+            "Jumlah impression iklan kompetitor"
+          ],
+          "correctAnswer": "Jumlah impression iklan kompetitor",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.6",
+          "text": "Seorang pembeli sudah memasukkan produk ke keranjang tetapi batal checkout karena ongkir terlalu tinggi. \n\nTahap customer journey yang mengalami masalah adalah...",
+          "options": [
+            "Awareness",
+            "Discovery",
+            "Consideration",
+            "Conversion"
+          ],
+          "correctAnswer": "Conversion",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.8",
+          "text": "Rumus penamaan produk yang direkomendasikan dalam materi adalah...",
+          "options": [
+            "Jenis Produk + Harga + Nama Seller",
+            "Brand + Jenis Produk + Spesifikasi/Fitur + Ukuran/Warna",
+            "Brand + Promo + Rating + Harga",
+            "Keyword + Nama Kompetitor + Diskon"
+          ],
+          "correctAnswer": "Brand + Jenis Produk + Spesifikasi/Fitur + Ukuran/Warna",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.9",
+          "text": "Salah satu fungsi size chart (contoh: pada produk baju) yang akurat adalah...",
+          "options": [
+            "Meningkatkan jumlah impressions",
+            "Menekan risiko retur atau pengembalian barang",
+            "Mengurangi biaya iklan",
+            "Menambah stok produk"
+          ],
+          "correctAnswer": "Menekan risiko retur atau pengembalian barang",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.10",
+          "text": "Promo yang paling sesuai jika seller ingin meningkatkan nilai keranjang adalah...",
+          "options": [
+            "Voucher follower",
+            "Flash sale produk lama",
+            "Diskon kombo promo minimal belanja",
+            "Menghapus seluruh promo"
+          ],
+          "correctAnswer": "Diskon kombo promo minimal belanja",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.11",
+          "text": "Apa peran utama ads di marketplace?",
+          "options": [
+            "Menjamin pembeli melakukan checkout",
+            "Membuat produk tampil lebih cepat kepada calon pembeli",
+            "Menggantikan kebutuhan terhadap listing produk",
+            "Meningkatkan rating secara otomatis"
+          ],
+          "correctAnswer": "Membuat produk tampil lebih cepat kepada calon pembeli",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.12",
+          "text": "Sebuah toko memiliki traffic tinggi, tetapi penjualannya rendah. Foto produk kurang menarik, deskripsi belum lengkap, dan rating masih buruk.\n\nTindakan yang paling tepat sebelum meningkatkan budget ads adalah...",
+          "options": [
+            "Menaikkan budget ads agar traffic semakin banyak",
+            "Menambahkan diskon sebesar mungkin",
+            "Merapikan komponen toko terlebih dahulu",
+            "Menurunkan harga seluruh produk"
+          ],
+          "correctAnswer": "Merapikan komponen toko terlebih dahulu",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.13",
+          "text": "Seorang seller ingin memberikan diskon 30% karena kompetitor memberikan diskon besar. Namun setelah dihitung, promo tersebut membuat keuntungan menjadi negatif. Keputusan yang paling sesuai dengan materi adalah...",
+          "options": [
+            "Tetap menggunakan diskon karena volume penjualan lebih penting",
+            "Menghentikan perhitungan margin karena promo hanya sementara",
+            "Menyesuaikan promo agar masih menyisakan margin yang sehat",
+            "Menambah subsidi ongkir supaya promo semakin menarik"
+          ],
+          "correctAnswer": "Menyesuaikan promo agar masih menyisakan margin yang sehat",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.15",
+          "text": "Urutan funnel marketplace performance yang digunakan dalam materi adalah..",
+          "options": [
+            "Impression → Visit → Product View → Add to Cart → Checkout → Review/Repeat",
+            "Visit → Impression → Checkout → Add to Cart → Review",
+            "Product View → Impression → Visit → Checkout → Add to Cart",
+            "Impression → Checkout → Visit → Review → Add to Cart"
+          ],
+          "correctAnswer": "Impression → Visit → Product View → Add to Cart → Checkout → Review/Repeat",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.16",
+          "text": "Conversion Rate digunakan untuk menjawab pertanyaan..",
+          "options": [
+            "Berapa banyak orang yang melihat iklan?",
+            "Apakah produk menarik di hasil pencarian?",
+            "Berapa pengunjung yang akhirnya membeli?",
+            "Apakah pembeli memberikan rating?"
+          ],
+          "correctAnswer": "Berapa pengunjung yang akhirnya membeli?",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.18",
+          "text": "Sebuah produk memiliki impressions tinggi tetapi CTR rendah. Berdasarkan konsep funnel, faktor pertama yang paling relevan untuk diperiksa adalah...",
+          "options": [
+            "Rating setelah pembelian",
+            "Foto utama, judul, dan harga yang terlihat di hasil pencarian",
+            "Repeat order",
+            "Proses retur"
+          ],
+          "correctAnswer": "Foto utama, judul, dan harga yang terlihat di hasil pencarian",
+          "type": "single",
+          "required": true
+        },
+        {
+          "key": "recap.marketplace.20",
+          "text": "Sebuah toko memiliki CTR dan Add to Cart Rate yang baik, tetapi hanya sedikit pengguna yang akhirnya melakukan order setelah masuk keranjang. Bagian funnel yang paling perlu dianalisis berikutnya adalah...",
+          "options": [
+            "Impression",
+            "Product View",
+            "Checkout",
+            "Review/Repeat"
+          ],
+          "correctAnswer": "Checkout",
+          "type": "single",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "assessment",
+      "kind": "assessment",
+      "title": "Mini asesmen",
+      "perPage": 1,
+      "questions": [
+        {
+          "key": "p2_skill_utama",
+          "text": "Kamu setuju, pengelolaan marketplace jadi salah satu skill utama yang dibutuhkan bisnis saat ini?",
+          "type": "single",
+          "points": {
+            "Setuju": 4,
+            "Tidak setuju": 1
+          },
+          "options": [
+            "Setuju",
+            "Tidak setuju"
+          ],
+          "required": true
+        },
+        {
+          "key": "p2_dampak_penghasilan",
+          "text": "Kamu setuju menguasai pengelolaan marketplace bisa berdampak positif ke penghasilan?",
+          "type": "single",
+          "points": {
+            "Setuju": 4,
+            "Tidak setuju": 1
+          },
+          "options": [
+            "Setuju",
+            "Tidak setuju"
+          ],
+          "required": true
+        },
+        {
+          "key": "p2_kemampuan_sekarang",
+          "text": "Bagaimana kamu menilai kemampuan mengelola marketplace kamu sekarang?",
+          "type": "single",
+          "points": {
+            "Cukup mahir": 5,
+            "Paham dasar": 4,
+            "Sangat mahir": 6,
+            "Pemula banget": 2
+          },
+          "options": [
+            "Pemula banget",
+            "Paham dasar",
+            "Cukup mahir",
+            "Sangat mahir"
+          ],
+          "required": true
+        },
+        {
+          "key": "p2_tools",
+          "text": "Platform marketplace apa yang pernah kamu kelola?",
+          "type": "multi",
+          "options": [
+            "Shopee",
+            "Tokopedia",
+            "TikTok Shop",
+            "Belum pernah satupun"
+          ],
+          "required": true,
+          "skipWhen": {
+            "key": "p1_pernah_iklan",
+            "value": "Belum",
+            "answer": [
+              "Belum pernah satupun"
+            ]
+          },
+          "countPoints": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "key": "p2_tempat_penerapan",
+          "text": "Di mana kamu ingin menerapkan skill ini?",
+          "type": "single",
+          "points": {
+            "Agency": 3,
+            "Belum tahu": 1,
+            "Bisnis sendiri": 3,
+            "Klien freelance": 3,
+            "Perusahaan tempat saya bekerja": 3
+          },
+          "options": [
+            "Bisnis sendiri",
+            "Perusahaan tempat saya bekerja",
+            "Klien freelance",
+            "Agency",
+            "Belum tahu"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "preferences",
+      "kind": "preferences",
+      "title": "Preferensi dan kendala belajar",
+      "perPage": 1,
+      "questions": [
+        {
+          "key": "p3_jenis_latihan",
+          "text": "Jenis latihan apa yang paling kamu suka?",
+          "type": "single",
+          "options": [
+            "Hands-on mengelola toko marketplace",
+            "Analisis data performa toko",
+            "Study case dari agency",
+            "Semua di atas"
+          ],
+          "required": true
+        },
+        {
+          "key": "p3_cara_belajar",
+          "text": "Kamu lebih suka belajar dengan cara apa?",
+          "type": "single",
+          "options": [
+            "Live class interaktif",
+            "Rekaman fleksibel",
+            "Mentoring 1:1",
+            "Kombinasi"
+          ],
+          "required": true
+        },
+        {
+          "key": "p3_pendekatan",
+          "text": "Pendekatan mana yang lebih cocok buat kamu?",
+          "type": "single",
+          "options": [
+            "Teori dulu, baru praktik",
+            "Langsung praktik sambil belajar"
+          ],
+          "required": true
+        },
+        {
+          "key": "p3_kendala_terbesar",
+          "text": "Apa kendala terbesar kamu saat ini untuk belajar mengelola marketplace?",
+          "type": "single",
+          "options": [
+            "Bentrok dengan waktu kerja",
+            "Belum punya sosok guru yang bisa diajak diskusi",
+            "Tidak tahu mulai dari mana",
+            "Semuanya di atas"
+          ],
+          "required": true
+        }
+      ]
+    }
+  ],
+  "baseScore": 70,
+  "narratives": {
+    "Bikin bisnis": "Kamu {score}% siap menjalankan iklan untuk bisnismu sendiri",
+    "Switch career": "Kamu {score}% siap beralih karier jadi Marketplace Specialist",
+    "Cari pekerjaan pertama": "Kamu {score}% siap memulai karier pertama sebagai Marketplace Specialist",
+    "Upskill untuk kebutuhan kerjaan": "Kamu {score}% siap naik level jadi Marketplace Specialist yang lebih strategis"
+  },
+  "welcomePoints": [
+    "+- 10 menit pengerjaan",
+    "Feedback",
+    "Quiz recap materi mini class",
+    "Mini asesmen",
+    "Sertiffikat"
+  ],
+  "defaultNarrative": "Kamu {score}% siap melangkah ke level berikutnya di Marketplace",
+  "certificateNotice": "Sertifikat akan dikirim max. 3 hari kerja.",
+  "welcomeDescription": "Selesaikan langkah terakhir mini class untuk mengulas materi dan mendapatkan sertifikat",
+  "certificateEligibility": "Sertifikat hanya diberikan kepada peserta yang hadir pada seluruh sesi, day 1–3."
+}

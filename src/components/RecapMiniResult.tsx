@@ -18,7 +18,7 @@ export const RecapMiniResult: React.FC<RecapMiniResultProps> = ({
   onContinue,
 }) => {
   const fraction = totalQuestions ? correctCount / totalQuestions : 0;
-  const narrative = `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! ${fraction >= 0.9 ? 'Pengetahuan kamu tentang Performance Marketing sudah sangat baik.' : fraction >= 0.6 ? 'Dasar-dasar Performance Marketing kamu udah cukup solid.' : fraction >= 0.3 ? 'Kamu udah punya modal awal yang bagus buat lanjut belajar lebih dalam.' : 'Kamu masih punya banyak ruang buat berkembang — yuk, lanjut belajar.'}`;
+  const narrative = `Kamu jawab ${correctCount} dari ${totalQuestions} pertanyaan dengan benar! ${fraction >= 0.9 ? 'Pemahaman kamu tentang materi mini class sudah sangat baik.' : fraction >= 0.6 ? 'Pemahaman dasar kamu udah cukup solid.' : fraction >= 0.3 ? 'Kamu udah punya modal awal yang bagus buat lanjut belajar lebih dalam.' : 'Kamu masih punya banyak ruang buat berkembang — yuk, lanjut belajar.'}`;
 
   // Badge icon or color based on band
   const getBadgeStyle = () => {

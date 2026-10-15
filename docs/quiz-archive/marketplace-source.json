@@ -1,0 +1,686 @@
+{
+  "source": "Silabus Mini Class Marketplace.xlsx",
+  "sheet": "Soal Quiz Batch 3-4",
+  "questions": [
+    {
+      "number": 1,
+      "cell": "B3",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Fungsi utama marketplace sebagai sebuah platform adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Memproduksi seluruh barang yang dijual seller",
+          "yellow": false,
+          "cell": "E3"
+        },
+        {
+          "label": "B",
+          "text": "Mempertemukan seller dan buyer dalam satu ekosistem transaksi",
+          "yellow": true,
+          "cell": "E4"
+        },
+        {
+          "label": "C",
+          "text": "Menggantikan seluruh kegiatan digital marketing sebuah brand",
+          "yellow": false,
+          "cell": "E5"
+        },
+        {
+          "label": "D",
+          "text": "Mengatur seluruh harga produk yang dijual seller",
+          "yellow": false,
+          "cell": "E6"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "cell": "B7",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Salah satu perbedaan utama e-commerce milik brand dengan marketplace adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "E-commerce selalu memiliki banyak penjual",
+          "yellow": false,
+          "cell": "E7"
+        },
+        {
+          "label": "B",
+          "text": "Marketplace memberikan kebebasan penuh terhadap tampilan dan fitur",
+          "yellow": false,
+          "cell": "E8"
+        },
+        {
+          "label": "C",
+          "text": "E-commerce memberikan kontrol branding yang lebih penuh kepada brand",
+          "yellow": true,
+          "cell": "E9"
+        },
+        {
+          "label": "D",
+          "text": "Marketplace tidak memiliki sumber traffic",
+          "yellow": false,
+          "cell": "E10"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "cell": "B11",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Urutan customer journey di marketplace yang sesuai dengan materi adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Consideration → Awareness → Conversion → Post-Conversion",
+          "yellow": false,
+          "cell": "E11"
+        },
+        {
+          "label": "B",
+          "text": "Awareness → Conversion → Consideration → Post-Conversion",
+          "yellow": false,
+          "cell": "E12"
+        },
+        {
+          "label": "C",
+          "text": "Awareness → Consideration → Conversion → Post-Conversion",
+          "yellow": true,
+          "cell": "E13"
+        },
+        {
+          "label": "D",
+          "text": "Conversion → Awareness → Consideration → Post-Conversion",
+          "yellow": false,
+          "cell": "E14"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "cell": "B15",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Pada tahap Consideration, pembeli biasanya mengevaluasi hal-hal berikut, kecuali...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Foto dan video produk",
+          "yellow": false,
+          "cell": "E15"
+        },
+        {
+          "label": "B",
+          "text": "Harga dan promo",
+          "yellow": false,
+          "cell": "E16"
+        },
+        {
+          "label": "C",
+          "text": "Rating dan ulasan",
+          "yellow": false,
+          "cell": "E17"
+        },
+        {
+          "label": "D",
+          "text": "Jumlah impression iklan kompetitor",
+          "yellow": true,
+          "cell": "E18"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "cell": "B19",
+      "red": true,
+      "font": null,
+      "fill": "EA9999",
+      "question": "Sebuah brand mendapatkan banyak traffic dari social media. Namun, ketika pengguna masuk ke marketplace, mereka ragu membeli karena rating sedikit dan tidak ada ulasan. Peran marketplace yang belum optimal dalam situasi tersebut adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Trust Factor",
+          "yellow": true,
+          "cell": "E19"
+        },
+        {
+          "label": "B",
+          "text": "Conversion Channel saja",
+          "yellow": false,
+          "cell": "E20"
+        },
+        {
+          "label": "C",
+          "text": "Traffic Acquisition",
+          "yellow": false,
+          "cell": "E21"
+        },
+        {
+          "label": "D",
+          "text": "Organic Content Channel",
+          "yellow": false,
+          "cell": "E22"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "cell": "B23",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Seorang pembeli sudah memasukkan produk ke keranjang tetapi batal checkout karena ongkir terlalu tinggi. \n\nTahap customer journey yang mengalami masalah adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Awareness",
+          "yellow": false,
+          "cell": "E23"
+        },
+        {
+          "label": "B",
+          "text": "Discovery",
+          "yellow": false,
+          "cell": "E24"
+        },
+        {
+          "label": "C",
+          "text": "Consideration",
+          "yellow": false,
+          "cell": "E25"
+        },
+        {
+          "label": "D",
+          "text": "Conversion",
+          "yellow": true,
+          "cell": "E26"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "cell": "B27",
+      "red": true,
+      "font": null,
+      "fill": "EA9999",
+      "question": "Sebuah toko memiliki impressions tinggi dan banyak product views, tetapi hanya sedikit add to cart. \n\nBerdasarkan metric map, area pertama yang sebaiknya dievaluasi adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Pengalaman post-purchase",
+          "yellow": false,
+          "cell": "E27"
+        },
+        {
+          "label": "B",
+          "text": "Kualitas halaman produk dan kemampuan listing meyakinkan pembeli",
+          "yellow": true,
+          "cell": "E28"
+        },
+        {
+          "label": "C",
+          "text": "Jumlah impressions",
+          "yellow": false,
+          "cell": "E29"
+        },
+        {
+          "label": "D",
+          "text": "Repeat purchase",
+          "yellow": false,
+          "cell": "E30"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "cell": "B31",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Rumus penamaan produk yang direkomendasikan dalam materi adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Jenis Produk + Harga + Nama Seller",
+          "yellow": false,
+          "cell": "E31"
+        },
+        {
+          "label": "B",
+          "text": "Brand + Jenis Produk + Spesifikasi/Fitur + Ukuran/Warna",
+          "yellow": true,
+          "cell": "E32"
+        },
+        {
+          "label": "C",
+          "text": "Brand + Promo + Rating + Harga",
+          "yellow": false,
+          "cell": "E33"
+        },
+        {
+          "label": "D",
+          "text": "Keyword + Nama Kompetitor + Diskon",
+          "yellow": false,
+          "cell": "E34"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "cell": "B35",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Salah satu fungsi size chart (contoh: pada produk baju) yang akurat adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Meningkatkan jumlah impressions",
+          "yellow": false,
+          "cell": "E35"
+        },
+        {
+          "label": "B",
+          "text": "Menekan risiko retur atau pengembalian barang",
+          "yellow": true,
+          "cell": "E36"
+        },
+        {
+          "label": "C",
+          "text": "Mengurangi biaya iklan",
+          "yellow": false,
+          "cell": "E37"
+        },
+        {
+          "label": "D",
+          "text": "Menambah stok produk",
+          "yellow": false,
+          "cell": "E38"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "cell": "B39",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Promo yang paling sesuai jika seller ingin meningkatkan nilai keranjang adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Voucher follower",
+          "yellow": false,
+          "cell": "E39"
+        },
+        {
+          "label": "B",
+          "text": "Flash sale produk lama",
+          "yellow": false,
+          "cell": "E40"
+        },
+        {
+          "label": "C",
+          "text": "Diskon kombo promo minimal belanja",
+          "yellow": true,
+          "cell": "E41"
+        },
+        {
+          "label": "D",
+          "text": "Menghapus seluruh promo",
+          "yellow": false,
+          "cell": "E42"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "cell": "G3",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Apa peran utama ads di marketplace?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Menjamin pembeli melakukan checkout",
+          "yellow": false,
+          "cell": "J3"
+        },
+        {
+          "label": "B",
+          "text": "Membuat produk tampil lebih cepat kepada calon pembeli",
+          "yellow": true,
+          "cell": "J4"
+        },
+        {
+          "label": "C",
+          "text": "Menggantikan kebutuhan terhadap listing produk",
+          "yellow": false,
+          "cell": "J5"
+        },
+        {
+          "label": "D",
+          "text": "Meningkatkan rating secara otomatis",
+          "yellow": false,
+          "cell": "J6"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "cell": "G7",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Sebuah toko memiliki traffic tinggi, tetapi penjualannya rendah. Foto produk kurang menarik, deskripsi belum lengkap, dan rating masih buruk.\n\nTindakan yang paling tepat sebelum meningkatkan budget ads adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Menaikkan budget ads agar traffic semakin banyak",
+          "yellow": false,
+          "cell": "J7"
+        },
+        {
+          "label": "B",
+          "text": "Menambahkan diskon sebesar mungkin",
+          "yellow": false,
+          "cell": "J8"
+        },
+        {
+          "label": "C",
+          "text": "Merapikan komponen toko terlebih dahulu",
+          "yellow": true,
+          "cell": "J9"
+        },
+        {
+          "label": "D",
+          "text": "Menurunkan harga seluruh produk",
+          "yellow": false,
+          "cell": "J10"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "cell": "G11",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Seorang seller ingin memberikan diskon 30% karena kompetitor memberikan diskon besar. Namun setelah dihitung, promo tersebut membuat keuntungan menjadi negatif. Keputusan yang paling sesuai dengan materi adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tetap menggunakan diskon karena volume penjualan lebih penting",
+          "yellow": false,
+          "cell": "J11"
+        },
+        {
+          "label": "B",
+          "text": "Menghentikan perhitungan margin karena promo hanya sementara",
+          "yellow": false,
+          "cell": "J12"
+        },
+        {
+          "label": "C",
+          "text": "Menyesuaikan promo agar masih menyisakan margin yang sehat",
+          "yellow": true,
+          "cell": "J13"
+        },
+        {
+          "label": "D",
+          "text": "Menambah subsidi ongkir supaya promo semakin menarik",
+          "yellow": false,
+          "cell": "J14"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "cell": "G15",
+      "red": true,
+      "font": null,
+      "fill": "EA9999",
+      "question": "Sebuah produk memiliki rating 4,8, stok 300 pcs, margin 35%, serta foto dan deskripsi lengkap. Produk lain memiliki stok tinggi tetapi foto belum siap dan margin hanya 15%. Jika seller harus memilih produk untuk diiklankan terlebih dahulu, pilihan paling rasional adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Produk dengan stok tertinggi meskipun listing belum siap",
+          "yellow": false,
+          "cell": "J15"
+        },
+        {
+          "label": "B",
+          "text": "Produk dengan rating 4,8, stok aman, margin cukup, dan listing lengkap",
+          "yellow": true,
+          "cell": "J16"
+        },
+        {
+          "label": "C",
+          "text": "Produk dengan margin paling rendah",
+          "yellow": false,
+          "cell": "J17"
+        },
+        {
+          "label": "D",
+          "text": "Semua produk harus diiklankan dalam budget yang sama",
+          "yellow": false,
+          "cell": "J18"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "cell": "G19",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Urutan funnel marketplace performance yang digunakan dalam materi adalah..",
+      "options": [
+        {
+          "label": "A",
+          "text": "Impression → Visit → Product View → Add to Cart → Checkout → Review/Repeat",
+          "yellow": true,
+          "cell": "J19"
+        },
+        {
+          "label": "B",
+          "text": "Visit → Impression → Checkout → Add to Cart → Review",
+          "yellow": false,
+          "cell": "J20"
+        },
+        {
+          "label": "C",
+          "text": "Product View → Impression → Visit → Checkout → Add to Cart",
+          "yellow": false,
+          "cell": "J21"
+        },
+        {
+          "label": "D",
+          "text": "Impression → Checkout → Visit → Review → Add to Cart",
+          "yellow": false,
+          "cell": "J22"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "cell": "G23",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Conversion Rate digunakan untuk menjawab pertanyaan..",
+      "options": [
+        {
+          "label": "A",
+          "text": "Berapa banyak orang yang melihat iklan?",
+          "yellow": false,
+          "cell": "J23"
+        },
+        {
+          "label": "B",
+          "text": "Apakah produk menarik di hasil pencarian?",
+          "yellow": false,
+          "cell": "J24"
+        },
+        {
+          "label": "C",
+          "text": "Berapa pengunjung yang akhirnya membeli?",
+          "yellow": true,
+          "cell": "J25"
+        },
+        {
+          "label": "D",
+          "text": "Apakah pembeli memberikan rating?",
+          "yellow": false,
+          "cell": "J26"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "cell": "G27",
+      "red": true,
+      "font": null,
+      "fill": "EA9999",
+      "question": "Dua toko masing-masing menghasilkan 100 order. Toko A memperoleh 100 order dari 5.000 visit, sedangkan Toko B memperoleh 100 order dari 50.000 visit. Berdasarkan konsep funnel, kesimpulan yang paling tepat adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kedua toko memiliki performa yang pasti sama karena jumlah order sama",
+          "yellow": false,
+          "cell": "J27"
+        },
+        {
+          "label": "B",
+          "text": "Toko B lebih sehat karena memiliki traffic lebih tinggi",
+          "yellow": false,
+          "cell": "J28"
+        },
+        {
+          "label": "C",
+          "text": "Toko A kemungkinan lebih efisien mengubah visit menjadi order",
+          "yellow": true,
+          "cell": "J29"
+        },
+        {
+          "label": "D",
+          "text": "Tidak perlu melihat jumlah visit selama jumlah order tercapai",
+          "yellow": false,
+          "cell": "J30"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "cell": "G31",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Sebuah produk memiliki impressions tinggi tetapi CTR rendah. Berdasarkan konsep funnel, faktor pertama yang paling relevan untuk diperiksa adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Rating setelah pembelian",
+          "yellow": false,
+          "cell": "J31"
+        },
+        {
+          "label": "B",
+          "text": "Foto utama, judul, dan harga yang terlihat di hasil pencarian",
+          "yellow": true,
+          "cell": "J32"
+        },
+        {
+          "label": "C",
+          "text": "Repeat order",
+          "yellow": false,
+          "cell": "J33"
+        },
+        {
+          "label": "D",
+          "text": "Proses retur",
+          "yellow": false,
+          "cell": "J34"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "cell": "G35",
+      "red": true,
+      "font": null,
+      "fill": "EA9999",
+      "question": "Kalo misalnya visit besar tapi add to cart kecil, kira kira apa kemungkinan penyebabnya?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kata kunci kurang pas, belum diiklankan",
+          "yellow": false,
+          "cell": "J35"
+        },
+        {
+          "label": "B",
+          "text": "Belum dipush lewat ads",
+          "yellow": false,
+          "cell": "J36"
+        },
+        {
+          "label": "C",
+          "text": "Judul atau foto utama kurang menarik",
+          "yellow": false,
+          "cell": "J37"
+        },
+        {
+          "label": "D",
+          "text": "Harga, deskripsi, atau ulasan belum meyakinkan",
+          "yellow": true,
+          "cell": "J38"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "cell": "G39",
+      "red": false,
+      "font": null,
+      "fill": "000000",
+      "question": "Sebuah toko memiliki CTR dan Add to Cart Rate yang baik, tetapi hanya sedikit pengguna yang akhirnya melakukan order setelah masuk keranjang. Bagian funnel yang paling perlu dianalisis berikutnya adalah...",
+      "options": [
+        {
+          "label": "A",
+          "text": "Impression",
+          "yellow": false,
+          "cell": "J39"
+        },
+        {
+          "label": "B",
+          "text": "Product View",
+          "yellow": false,
+          "cell": "J40"
+        },
+        {
+          "label": "C",
+          "text": "Checkout",
+          "yellow": true,
+          "cell": "J41"
+        },
+        {
+          "label": "D",
+          "text": "Review/Repeat",
+          "yellow": false,
+          "cell": "J42"
+        }
+      ]
+    }
+  ]
+}

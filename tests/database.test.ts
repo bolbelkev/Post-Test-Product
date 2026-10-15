@@ -10,7 +10,20 @@ import { hashPassword } from '../server/security.ts';
 import { allQuestions, validateConfig, publicConfig, csvCell, scores } from '../server/domain.ts';
 import { startParticipant, saveAnswer, readParticipant, completeParticipant, updateConfig, exportCsv } from '../server/repository.ts';
 import type { Database } from '../server/db.ts';
+import { marketplaceConfig } from '../db/marketplace.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('Marketplace includes 15 source questions, excludes red numbers, and scores from the yellow answer keys',async()=>{
+  const source=JSON.parse(await readFile('docs/quiz-archive/marketplace-source.json','utf8'));
+  assert.deepEqual(source.questions.filter(q=>q.red).map(q=>q.number),[5,7,14,17,19]);
+  const c=validateConfig(marketplaceConfig(initialConfig,source));
+  assert.equal(c.active,false);
+  const recap=c.sections.find(s=>s.kind==='recap')!.questions;assert.equal(recap.length,15);
+  assert(!JSON.stringify(c).toLowerCase().includes('performance marketing'));
+  for(const q of recap){const original=source.questions.find(p=>`recap.marketplace.${p.number}`===q.key);assert(original&&!original.red);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow).text);}
+  const answers=Object.fromEntries(recap.map(q=>[q.key,q.correctAnswer!]));
+  assert.equal(scores(c,answers).recapCorrect,15);assert.equal(scores(c,answers).recapTotal,15);
+  assert(!JSON.stringify(publicConfig(c)).includes('correctAnswer'));
+});
 test('final readiness combines recap 70% and self-report 30% within 40–85',()=>{
   const low={p1_pernah_iklan:'Belum',p2_skill_utama:'Tidak setuju',p2_dampak_penghasilan:'Tidak setuju',p2_kemampuan_sekarang:'Pemula banget',p2_tools:['Belum pernah satupun'],p2_tempat_penerapan:'Belum tahu'};
   const high={p1_pernah_iklan:'Sudah',p2_skill_utama:'Setuju',p2_dampak_penghasilan:'Setuju',p2_kemampuan_sekarang:'Sangat mahir',p2_tools:['Meta Ads','Google Ads','TikTok Ads'],p2_tempat_penerapan:'Agency'};

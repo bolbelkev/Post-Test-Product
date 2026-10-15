@@ -29,7 +29,7 @@ export const RecapProcessing: React.FC<RecapProcessingProps> = ({ onComplete }) 
         Menghitung pemahaman kamu...
       </h3>
       <p className="text-xs text-gray-500 max-w-xs">
-        Mencocokkan jawaban kamu dengan kunci materi Fundamental Performance Marketing
+        Mencocokkan jawaban kamu dengan kunci materi mini class
       </p>
 
       {/* Micro progress bar */}
