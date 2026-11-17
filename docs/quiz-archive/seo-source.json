@@ -1,0 +1,526 @@
+{
+  "source": "Silabus Mini Class SEO 2026.xlsx",
+  "sheet": "Soal Quiz Batch 4",
+  "questions": [
+    {
+      "number": 1,
+      "question": "Bagaimana pengaruh AI terhadap kebutuhan SEO?",
+      "options": [
+        {
+          "text": "AI menghilangkan kebutuhan SEO sepenuhnya",
+          "yellow": false,
+          "cell": "E3"
+        },
+        {
+          "text": "AI mengubah cara kerja SEO, tetapi kebutuhan SEO tetap ada",
+          "yellow": true,
+          "cell": "E4"
+        },
+        {
+          "text": "AI hanya digunakan untuk iklan digital",
+          "yellow": false,
+          "cell": "E5"
+        },
+        {
+          "text": "AI membuat website tidak lagi membutuhkan konten",
+          "yellow": false,
+          "cell": "E6"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "question": "Perubahan arah SEO yang dijelaskan dalam materi adalah dari “ranking di halaman 1” menjadi...",
+      "options": [
+        {
+          "text": "Mendapatkan lebih banyak followers",
+          "yellow": false,
+          "cell": "E7"
+        },
+        {
+          "text": "Memperbanyak iklan berbayar",
+          "yellow": false,
+          "cell": "E8"
+        },
+        {
+          "text": "Muncul di jawaban AI",
+          "yellow": true,
+          "cell": "E9"
+        },
+        {
+          "text": "Membuat website sebanyak mungkin",
+          "yellow": false,
+          "cell": "E10"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "question": "Istilah yang digunakan untuk optimasi agar konten dapat menjadi referensi AI adalah...",
+      "options": [
+        {
+          "text": "SEM",
+          "yellow": false,
+          "cell": "E11"
+        },
+        {
+          "text": "CRO",
+          "yellow": false,
+          "cell": "E12"
+        },
+        {
+          "text": "GEO",
+          "yellow": true,
+          "cell": "E13"
+        },
+        {
+          "text": "CRM",
+          "yellow": false,
+          "cell": "E14"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "question": "Pada roadmap SEO, aktivitas seperti Technical SEO, Keyword Research, dan On-Page Optimization termasuk dalam tahap...",
+      "options": [
+        {
+          "text": "Foundation",
+          "yellow": true,
+          "cell": "E15"
+        },
+        {
+          "text": "Building",
+          "yellow": false,
+          "cell": "E16"
+        },
+        {
+          "text": "Optimizing",
+          "yellow": false,
+          "cell": "E17"
+        },
+        {
+          "text": "Reporting",
+          "yellow": false,
+          "cell": "E18"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "question": "Aktivitas yang termasuk dalam tahap “Building” pada roadmap SEO adalah...",
+      "options": [
+        {
+          "text": "Keyword Research",
+          "yellow": false,
+          "cell": "E19"
+        },
+        {
+          "text": "Performance Tracking",
+          "yellow": false,
+          "cell": "E20"
+        },
+        {
+          "text": "Link Building",
+          "yellow": true,
+          "cell": "E21"
+        },
+        {
+          "text": "Data Analysis",
+          "yellow": false,
+          "cell": "E22"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "question": "Berikut ini yang termasuk skill utama Junior SEO Specialist adalah...",
+      "options": [
+        {
+          "text": "On-Page SEO, Technical SEO, dan Off-Page SEO",
+          "yellow": true,
+          "cell": "E23"
+        },
+        {
+          "text": "Graphic Design, Video Editing, dan Copywriting",
+          "yellow": false,
+          "cell": "E24"
+        },
+        {
+          "text": "Social Media Ads, Email Marketing, dan CRM",
+          "yellow": false,
+          "cell": "E25"
+        },
+        {
+          "text": "Media Buying, Photography, dan Branding",
+          "yellow": false,
+          "cell": "E26"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "question": "Berikut ini yang merupakan salah satu metrik untuk mengukur performa SEO adalah...",
+      "options": [
+        {
+          "text": "Organic Traffic",
+          "yellow": true,
+          "cell": "E27"
+        },
+        {
+          "text": "Add to Cart",
+          "yellow": false,
+          "cell": "E28"
+        },
+        {
+          "text": "Shares",
+          "yellow": false,
+          "cell": "E29"
+        },
+        {
+          "text": "Cost per Miles",
+          "yellow": false,
+          "cell": "E30"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "question": "SEO Writing adalah proses merencanakan dan menulis konten agar...",
+      "options": [
+        {
+          "text": "Hanya menarik bagi search engine",
+          "yellow": false,
+          "cell": "E31"
+        },
+        {
+          "text": "Relevan dengan kebutuhan pencarian audiens dan mudah ditemukan search engine",
+          "yellow": true,
+          "cell": "E32"
+        },
+        {
+          "text": "Memiliki sebanyak mungkin keyword",
+          "yellow": false,
+          "cell": "E33"
+        },
+        {
+          "text": "Selalu berada di posisi pertama Google",
+          "yellow": false,
+          "cell": "E34"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "question": "Pendekatan yang dianjurkan dalam membuat artikel SEO adalah...",
+      "options": [
+        {
+          "text": "Search-engine-first content",
+          "yellow": false,
+          "cell": "E35"
+        },
+        {
+          "text": "Advertising-first content",
+          "yellow": false,
+          "cell": "E36"
+        },
+        {
+          "text": "People-first content",
+          "yellow": true,
+          "cell": "E37"
+        },
+        {
+          "text": "Keyword-first content",
+          "yellow": false,
+          "cell": "E38"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "question": "Keyword dasar yang digunakan untuk mengawali proses riset disebut...",
+      "options": [
+        {
+          "text": "Long-tail keyword",
+          "yellow": false,
+          "cell": "E39"
+        },
+        {
+          "text": "Seed keyword",
+          "yellow": true,
+          "cell": "E40"
+        },
+        {
+          "text": "Commercial keyword",
+          "yellow": false,
+          "cell": "E41"
+        },
+        {
+          "text": "Transactional keyword",
+          "yellow": false,
+          "cell": "E42"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "question": "Jenis keyword yang biasanya lebih spesifik, memiliki persaingan lebih rendah, dan cenderung menghasilkan kualitas conversion lebih baik adalah...",
+      "options": [
+        {
+          "text": "Short-tail keyword",
+          "yellow": false,
+          "cell": "J3"
+        },
+        {
+          "text": "Mid-tail keyword",
+          "yellow": false,
+          "cell": "J4"
+        },
+        {
+          "text": "Long-tail keyword",
+          "yellow": true,
+          "cell": "J5"
+        },
+        {
+          "text": "Seed keyword",
+          "yellow": false,
+          "cell": "J6"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "question": "Search intent ketika seseorang ingin mencari informasi mengenai suatu topik disebut...",
+      "options": [
+        {
+          "text": "Informational",
+          "yellow": true,
+          "cell": "J7"
+        },
+        {
+          "text": "Navigational",
+          "yellow": false,
+          "cell": "J8"
+        },
+        {
+          "text": "Commercial",
+          "yellow": false,
+          "cell": "J9"
+        },
+        {
+          "text": "Transactional",
+          "yellow": false,
+          "cell": "J10"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "question": "Keyword seperti “beli”, “pesan”, “promo”, dan “diskon” biasanya menunjukkan search intent...",
+      "options": [
+        {
+          "text": "Informational",
+          "yellow": false,
+          "cell": "J11"
+        },
+        {
+          "text": "Navigational",
+          "yellow": false,
+          "cell": "J12"
+        },
+        {
+          "text": "Commercial",
+          "yellow": false,
+          "cell": "J13"
+        },
+        {
+          "text": "Transactional",
+          "yellow": true,
+          "cell": "J14"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "question": "Menurut materi, panjang karakter title artikel SEO yang disarankan adalah...",
+      "options": [
+        {
+          "text": "10–20 karakter",
+          "yellow": false,
+          "cell": "J15"
+        },
+        {
+          "text": "20–30 karakter",
+          "yellow": false,
+          "cell": "J16"
+        },
+        {
+          "text": "50–60 karakter",
+          "yellow": true,
+          "cell": "J17"
+        },
+        {
+          "text": "100–150 karakter",
+          "yellow": false,
+          "cell": "J18"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "question": "Program yang melakukan crawl terhadap halaman website disebut...",
+      "options": [
+        {
+          "text": "Googlebot",
+          "yellow": true,
+          "cell": "J19"
+        },
+        {
+          "text": "Google Ads",
+          "yellow": false,
+          "cell": "J20"
+        },
+        {
+          "text": "Google Trends",
+          "yellow": false,
+          "cell": "J21"
+        },
+        {
+          "text": "Google Business Profile",
+          "yellow": false,
+          "cell": "J22"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "question": "Setelah Googlebot melakukan crawl, Google dapat menyimpan halaman website ke dalam proses...",
+      "options": [
+        {
+          "text": "Advertising",
+          "yellow": false,
+          "cell": "J23"
+        },
+        {
+          "text": "Indexing",
+          "yellow": true,
+          "cell": "J24"
+        },
+        {
+          "text": "Retargeting",
+          "yellow": false,
+          "cell": "J25"
+        },
+        {
+          "text": "Remarketing",
+          "yellow": false,
+          "cell": "J26"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "question": "Berikut ini yang termasuk hal penting yang dilihat Googlebot adalah...",
+      "options": [
+        {
+          "text": "Struktur website, URL, dan konten",
+          "yellow": true,
+          "cell": "J27"
+        },
+        {
+          "text": "Jumlah followers, likes, dan comments",
+          "yellow": false,
+          "cell": "J28"
+        },
+        {
+          "text": "Harga produk, diskon, dan voucher",
+          "yellow": false,
+          "cell": "J29"
+        },
+        {
+          "text": "Logo, warna brand, dan font",
+          "yellow": false,
+          "cell": "J30"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "question": "LCP merupakan metrik yang mengukur...",
+      "options": [
+        {
+          "text": "Responsivitas website terhadap klik pengguna",
+          "yellow": false,
+          "cell": "J31"
+        },
+        {
+          "text": "Seberapa cepat konten atau elemen terbesar ditampilkan",
+          "yellow": true,
+          "cell": "J32"
+        },
+        {
+          "text": "Jumlah internal link dalam website",
+          "yellow": false,
+          "cell": "J33"
+        },
+        {
+          "text": "Jumlah halaman yang diindeks Google",
+          "yellow": false,
+          "cell": "J34"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "question": "Internal link adalah link yang menghubungkan halaman dengan...",
+      "options": [
+        {
+          "text": "Website kompetitor",
+          "yellow": false,
+          "cell": "J35"
+        },
+        {
+          "text": "Halaman relevan di website sendiri",
+          "yellow": true,
+          "cell": "J36"
+        },
+        {
+          "text": "Akun media sosial pengguna",
+          "yellow": false,
+          "cell": "J37"
+        },
+        {
+          "text": "Website iklan berbayar",
+          "yellow": false,
+          "cell": "J38"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "question": "Tools yang disebutkan dalam materi untuk mengecek loading speed website adalah...",
+      "options": [
+        {
+          "text": "Google Trends",
+          "yellow": false,
+          "cell": "J39"
+        },
+        {
+          "text": "Google PageSpeed Insights",
+          "yellow": true,
+          "cell": "J40"
+        },
+        {
+          "text": "Google Keyword Planner",
+          "yellow": false,
+          "cell": "J41"
+        },
+        {
+          "text": "Google Merchant Center",
+          "yellow": false,
+          "cell": "J42"
+        }
+      ]
+    }
+  ]
+}

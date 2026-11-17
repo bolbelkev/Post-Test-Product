@@ -11,7 +11,19 @@ import { allQuestions, validateConfig, publicConfig, csvCell, scores } from '../
 import { startParticipant, saveAnswer, readParticipant, completeParticipant, updateConfig, exportCsv } from '../server/repository.ts';
 import type { Database } from '../server/db.ts';
 import { marketplaceConfig } from '../db/marketplace.ts';
+import {seoConfig} from '../db/seo.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('SEO imports all 20 questions with yellow keys and removes PM/Marketplace wording',async()=>{
+  const source=JSON.parse(await readFile('docs/quiz-archive/seo-source.json','utf8'));
+  const c=validateConfig(seoConfig(initialConfig,source));
+  assert.equal(c.active,false);assert.equal(c.batch,'SEO Batch 4');
+  const recap=c.sections.find(s=>s.kind==='recap')!.questions;assert.equal(recap.length,20);
+  for(const q of recap){const original=source.questions.find(p=>`recap.seo.${p.number}`===q.key);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow).text);}
+  for(const section of c.sections.filter(s=>s.kind!=='recap')) assert(!/performance marketing|marketplace|meta ads|tiktok ads/i.test(JSON.stringify(section)));
+  assert(c.sections.flatMap(s=>s.questions).find(q=>q.key==='p2_tools')!.options.includes('Google Search Console'));
+  const correct=Object.fromEntries(recap.map(q=>[q.key,q.correctAnswer!]));assert.equal(scores(c,correct).recapCorrect,20);
+  assert(!JSON.stringify(publicConfig(c)).includes('correctAnswer'));
+});
 test('Marketplace includes 15 source questions, excludes red numbers, and scores from the yellow answer keys',async()=>{
   const source=JSON.parse(await readFile('docs/quiz-archive/marketplace-source.json','utf8'));
   assert.deepEqual(source.questions.filter(q=>q.red).map(q=>q.number),[5,7,14,17,19]);
