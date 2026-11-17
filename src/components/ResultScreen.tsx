@@ -8,7 +8,6 @@ import {
   ExternalLink,
   Target,
   AlertTriangle,
-  Mail,
   CheckCircle2,
   RotateCcw,
 } from 'lucide-react';
@@ -178,12 +177,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       </div>
 
       {/* 5. Info Sertifikat */}
-      {certificateForm || <div className="rounded-xl border border-[#F9EDDE] bg-[#F9EDDE]/40 p-2.5 flex items-center gap-2.5 text-xs">
-        <Mail className="w-4 h-4 text-[#BD214C] shrink-0" />
-        <div className="text-[11px] text-gray-600 leading-tight">
-          Sertifikat akan dikirim ke email kamu dalam <span className="font-semibold text-[#BD214C]">1–3 hari kerja</span> ({submission.user.email}).
-        </div>
-      </div>}
+      {certificateForm}
 
       {/* 6. Footer actions */}
       <div className="text-center pt-1">
