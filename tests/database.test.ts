@@ -12,26 +12,44 @@ import { startParticipant, saveAnswer, readParticipant, completeParticipant, upd
 import type { Database } from '../server/db.ts';
 import { marketplaceConfig } from '../db/marketplace.ts';
 import {seoConfig} from '../db/seo.ts';
+import {withoutSeoCertificate} from '../db/seo-flow.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('SEO without certificate starts anonymously, requires job details, and completes without email; PM still requires name',async()=>{
+  const c=validateConfig(withoutSeoCertificate(initialConfig));
+  assert.equal(c.certificateEnabled,false);
+  await db.query('INSERT INTO quiz_configs(slug,config) VALUES($1,$2)',['seo-flow-test',JSON.stringify(c)]);
+  await assert.rejects(()=>startParticipant(db,undefined,'pm'));
+  const created=await startParticipant(db,undefined,'seo-flow-test');assert.equal(created.participant.name,'');assert.equal(created.participant.email,null);
+  for(const q of allQuestions(c).filter(q=>q.required&&!q.detailFor)) {
+    await saveAnswer(db,created.sessionToken,q.key,q.type==='text'?'Jawaban':q.type==='rating'?4:q.type==='multi'?[q.options[0]]:q.options[0]);
+  }
+  await assert.rejects(()=>completeParticipant(db,created.sessionToken,undefined));
+  await saveAnswer(db,created.sessionToken,'p1_pekerjaan.detail','   ');
+  await assert.rejects(()=>completeParticipant(db,created.sessionToken,undefined));
+  await saveAnswer(db,created.sessionToken,'p1_pekerjaan.detail','Marketing Manager');
+  const done=await completeParticipant(db,created.sessionToken,undefined);assert.equal(done.status,'completed');assert.equal(done.email,null);assert.equal(done.answers['p1_pekerjaan.detail'],'Marketing Manager');
+  assert.equal((await completeParticipant(db,created.sessionToken,undefined)).status,'completed');
+  assert((await exportCsv(db,'','seo-flow-test')).includes('Marketing Manager'));
+});
 test('SEO imports all 20 questions with yellow keys and removes PM/Marketplace wording',async()=>{
-  const source=JSON.parse(await readFile('docs/quiz-archive/seo-source.json','utf8'));
+  const source:import('../db/seo.ts').SeoSource=JSON.parse(await readFile('docs/quiz-archive/seo-source.json','utf8'));
   const c=validateConfig(seoConfig(initialConfig,source));
   assert.equal(c.active,false);assert.equal(c.batch,'SEO Batch 4');
   const recap=c.sections.find(s=>s.kind==='recap')!.questions;assert.equal(recap.length,20);
-  for(const q of recap){const original=source.questions.find(p=>`recap.seo.${p.number}`===q.key);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow).text);}
+  for(const q of recap){const original=source.questions.find(p=>`recap.seo.${p.number}`===q.key);assert(original);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow)!.text);}
   for(const section of c.sections.filter(s=>s.kind!=='recap')) assert(!/performance marketing|marketplace|meta ads|tiktok ads/i.test(JSON.stringify(section)));
   assert(c.sections.flatMap(s=>s.questions).find(q=>q.key==='p2_tools')!.options.includes('Google Search Console'));
   const correct=Object.fromEntries(recap.map(q=>[q.key,q.correctAnswer!]));assert.equal(scores(c,correct).recapCorrect,20);
   assert(!JSON.stringify(publicConfig(c)).includes('correctAnswer'));
 });
 test('Marketplace includes 15 source questions, excludes red numbers, and scores from the yellow answer keys',async()=>{
-  const source=JSON.parse(await readFile('docs/quiz-archive/marketplace-source.json','utf8'));
+  const source:import('../db/marketplace.ts').MarketplaceSource=JSON.parse(await readFile('docs/quiz-archive/marketplace-source.json','utf8'));
   assert.deepEqual(source.questions.filter(q=>q.red).map(q=>q.number),[5,7,14,17,19]);
   const c=validateConfig(marketplaceConfig(initialConfig,source));
   assert.equal(c.active,false);
   const recap=c.sections.find(s=>s.kind==='recap')!.questions;assert.equal(recap.length,15);
   assert(!JSON.stringify(c).toLowerCase().includes('performance marketing'));
-  for(const q of recap){const original=source.questions.find(p=>`recap.marketplace.${p.number}`===q.key);assert(original&&!original.red);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow).text);}
+  for(const q of recap){const original=source.questions.find(p=>`recap.marketplace.${p.number}`===q.key);assert(original&&!original.red);assert.equal(q.text,original.question);assert.equal(q.correctAnswer,original.options.find(o=>o.yellow)!.text);}
   const answers=Object.fromEntries(recap.map(q=>[q.key,q.correctAnswer!]));
   assert.equal(scores(c,answers).recapCorrect,15);assert.equal(scores(c,answers).recapTotal,15);
   assert(!JSON.stringify(publicConfig(c)).includes('correctAnswer'));

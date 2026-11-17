@@ -23,11 +23,12 @@ export async function readParticipant(db: Database, sessionToken?: string): Prom
   return { id: row.id, name: row.name, email: row.email, status: row.status, step: row.step, answers, config: publicConfig(row.config_snapshot), ...computed, clickedCta: !!row.clicked_cta_at };
 }
 export async function startParticipant(db: Database, name: unknown, slug = 'pm') {
-  if (typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 150) throw new HttpError(400, 'Nama sertifikat harus 3–150 karakter.');
   const { config } = await loadConfig(db, slug);
+  if (config.certificateEnabled !== false && (typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 150)) throw new HttpError(400, 'Nama sertifikat harus 3–150 karakter.');
+  const participantName = config.certificateEnabled === false ? '' : (name as string).trim();
   if (!config.active) throw new HttpError(403, 'Post test belum dibuka.');
   const sessionToken = token();
-  await db.query('INSERT INTO participant_sessions(id,token_hash,quiz_slug,name,config_snapshot) VALUES($1,$2,$3,$4,$5)', [randomUUID(), hash(sessionToken), slug, name.trim(), JSON.stringify(config)]);
+  await db.query('INSERT INTO participant_sessions(id,token_hash,quiz_slug,name,config_snapshot) VALUES($1,$2,$3,$4,$5)', [randomUUID(), hash(sessionToken), slug, participantName, JSON.stringify(config)]);
   return { sessionToken, participant: await readParticipant(db, sessionToken) };
 }
 export async function saveAnswer(db: Database, sessionToken: string | undefined, key: unknown, raw: unknown) {
@@ -35,7 +36,7 @@ export async function saveAnswer(db: Database, sessionToken: string | undefined,
   if (session.status === 'completed') throw new HttpError(409, 'Pengerjaan ini sudah selesai. Mulai ulang untuk jawaban baru.');
   const q = allQuestions(session.config_snapshot).find(q => q.key === key);
   if (!q) throw new HttpError(400, 'Pertanyaan tidak ditemukan dalam sesi ini.');
-  const answer = validAnswer(q, raw);
+  const answer = validAnswer(q.detailFor ? {...q, required:false} : q, raw);
   // The parent update obtains a row lock; completion cannot race this upsert.
   const result = await db.query(`WITH active AS (
     UPDATE participant_sessions SET updated_at=now() WHERE id=$1 AND status='in_progress' RETURNING id
@@ -52,25 +53,28 @@ export async function saveProgress(db: Database, sessionToken: string | undefine
 }
 export async function completeParticipant(db: Database, sessionToken: string | undefined, email: unknown): Promise<Participant> {
   if (db.transaction) return db.transaction(tx => completeParticipant(tx, sessionToken, email));
-  if (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) throw new HttpError(400, 'Email tidak valid.');
   const row = await sessionRow(db, sessionToken);
+  const requiresEmail = row.config_snapshot.certificateEnabled !== false;
+  if (requiresEmail && (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))) throw new HttpError(400, 'Email tidak valid.');
+  const contactEmail = requiresEmail ? (email as string).trim().toLowerCase() : null;
   if (row.status === 'completed') {
-    if (row.email !== email.trim().toLowerCase()) throw new HttpError(409, 'Email untuk sesi ini sudah tersimpan.');
+    if (row.email !== contactEmail) throw new HttpError(409, 'Email untuk sesi ini sudah tersimpan.');
     return readParticipant(db, sessionToken);
   }
   const locked = (await db.query('SELECT * FROM participant_sessions WHERE id=$1 FOR UPDATE', [row.id])).rows[0];
   if (locked.status === 'completed') {
-    if (locked.email !== email.trim().toLowerCase()) throw new HttpError(409, 'Email untuk sesi ini sudah tersimpan.');
+    if (locked.email !== contactEmail) throw new HttpError(409, 'Email untuk sesi ini sudah tersimpan.');
     return readParticipant(db, sessionToken);
   }
   const saved = (await db.query('SELECT question_key,answer FROM participant_answers WHERE session_id=$1',[row.id])).rows;
   const answers = effectiveAnswers(locked.config_snapshot, Object.fromEntries(saved.map(a=>[a.question_key,a.answer])));
   for (const q of allQuestions(locked.config_snapshot)) {
-    if (q.required && answers[q.key] === undefined) throw new HttpError(400, 'Lengkapi seluruh pertanyaan wajib sebelum menyimpan email.');
+    if (q.detailFor && !answers[q.detailFor]) continue;
+    if (q.required && answers[q.key] === undefined) throw new HttpError(400, 'Lengkapi seluruh pertanyaan wajib sebelum menyelesaikan post test.');
     if (answers[q.key] !== undefined) validAnswer(q, answers[q.key]);
   }
   const computed = scores(locked.config_snapshot, answers);
-  await db.query(`UPDATE participant_sessions SET email=$2,status='completed',completed_at=COALESCE(completed_at,now()),updated_at=now(),recap_correct=$3,recap_total=$4,match_score=$5 WHERE id=$1`, [row.id, email.trim().toLowerCase(), computed.recapCorrect, computed.recapTotal, computed.score]);
+  await db.query(`UPDATE participant_sessions SET email=$2,status='completed',completed_at=COALESCE(completed_at,now()),updated_at=now(),recap_correct=$3,recap_total=$4,match_score=$5 WHERE id=$1`, [row.id, contactEmail, computed.recapCorrect, computed.recapTotal, computed.score]);
   return readParticipant(db, sessionToken);
 }
 export async function updateConfig(db: Database, raw: unknown, revision: unknown, slug = 'pm') {
@@ -102,7 +106,7 @@ export async function exportCsv(db: Database, status: string, slug = 'pm') {
   const data = rows.map(row => {
     const answers = Object.fromEntries(Object.entries(row.responses).map(([key,e]: [string,any]) => [key,e.answer]));
     const computed = scores(row.config_snapshot, answers);
-    return [row.id,row.name,row.email,row.config_snapshot.batch,row.status === 'completed' ? 'Email tersimpan' : 'Belum melengkapi email',row.created_at.toISOString(),row.completed_at?.toISOString(),row.step,computed.recapCorrect,computed.recapTotal,computed.score,!!row.clicked_cta_at,...labels.map(label => {
+    return [row.id,row.name,row.email,row.config_snapshot.batch,row.config_snapshot.certificateEnabled===false ? (row.status==='completed'?'Selesai':'Belum selesai') : row.status === 'completed' ? 'Email tersimpan' : 'Belum melengkapi email',row.created_at.toISOString(),row.completed_at?.toISOString(),row.step,computed.recapCorrect,computed.recapTotal,computed.score,!!row.clicked_cta_at,...labels.map(label => {
       const key = columns.get(label)!; const entry = row.responses[key];
       return entry && `${key}: ${entry.question.text}` === label ? entry.answer : '';
     })];

@@ -6,10 +6,10 @@ export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabl
   questions: Question[]; answers: Record<string,Answer>; onAnswer: (key:string,value:Answer) => void;
   onNext: () => void; disabled:boolean; grouped:boolean; showNext?:boolean; autoAdvance?:boolean; nextLabel?:string;
 }) {
-  const ready = questions.every(q => !q.required || (answers[q.key] !== undefined && (typeof answers[q.key] === 'number' || (Array.isArray(answers[q.key]) ? (answers[q.key] as string[]).length>0 : !!String(answers[q.key]).trim()))));
+  const ready = questions.every(q => (!q.required || (answers[q.key] !== undefined && (typeof answers[q.key] === 'number' || (Array.isArray(answers[q.key]) ? (answers[q.key] as string[]).length>0 : !!String(answers[q.key]).trim())))) && (!q.detailOptions || !answers[q.key] || !!String(answers[q.key+'.detail'] || '').trim()));
   const render = (q:Question) => {
     const value = answers[q.key];
-    if (q.type==='single' || q.type==='multi') return <QuestionCard key={q.key} questionNumber={1} totalInPart={1} questionText={grouped ? '' : q.text} options={[...q.options,...(q.allowOther ? ['Lainnya'] : [])]} isMultiSelect={false}
+    if (q.type==='single' || q.type==='multi') return <QuestionCard key={q.key} hideNext questionNumber={1} totalInPart={1} questionText={grouped ? '' : q.text} options={[...q.options,...(q.allowOther ? ['Lainnya'] : [])]} isMultiSelect={false}
       selectedValues={Array.isArray(value) ? value : typeof value==='string' ? q.options.includes(value) ? [value] : ['Lainnya'] : []}
       onSelect={option => {
         if (option === 'Lainnya' && q.allowOther) return;
@@ -18,10 +18,16 @@ export function DatabaseQuestions({ questions, answers, onAnswer, onNext, disabl
           const next=option==='Belum pernah satupun' ? [option] : before.includes(option) ? before.filter(v=>v!==option) : [...before.filter(v=>v!=='Belum pernah satupun'),option];
           onAnswer(q.key,next);
         } else {
+          if (q.detailOptions && option !== value) onAnswer(q.key+'.detail','');
           onAnswer(q.key,option);
           if (autoAdvance && questions.length === 1 && !grouped) onNext();
         }
-      }} customOption={q.allowOther ? { value: typeof value==='string' && !q.options.includes(value) ? value : '', onChange: text=>onAnswer(q.key,text) } : undefined} />;
+      }} customOption={q.allowOther ? { value: typeof value==='string' && !q.options.includes(value) ? value : '', onChange: text=>onAnswer(q.key,text) } : undefined} >
+        {q.detailOptions && typeof value==='string' && q.detailOptions[value] && <div key={value} className="job-detail rounded-xl bg-[#F9EDDE]/30 border border-[#BD214C]/15 p-3 mt-3">
+          <label className="block text-sm font-semibold" htmlFor={q.key+'-detail'}>{q.detailOptions[value].label}</label>
+          <input id={q.key+'-detail'} required maxLength={500} value={String(answers[q.key+'.detail']||'')} onChange={e=>onAnswer(q.key+'.detail',e.target.value)} placeholder={q.detailOptions[value].placeholder} className="w-full rounded-lg border border-gray-300 p-3 text-sm mt-2 focus:outline-none focus:ring-2 focus:ring-[#BD214C]" />
+        </div>}
+      </QuestionCard>;
     if (q.type==='rating') return <div>
       <p className="text-xs text-[#BD214C] font-semibold mb-1" aria-live="polite">{typeof value==='number' ? `${value} / 5 · ${['Sangat tidak setuju','Tidak setuju','Netral','Setuju','Sangat setuju'][value-1]}` : 'Klik atau geser untuk memilih nilai'}</p>
       <RatingSlider label={q.text} value={typeof value==='number' ? value : undefined} onSelect={v=>onAnswer(q.key,v)} />

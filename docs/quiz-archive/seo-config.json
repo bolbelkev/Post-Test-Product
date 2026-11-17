@@ -15,7 +15,7 @@
     "imageAlt": "Tambahan diskon 5% khusus peserta Mini Class"
   },
   "title": "Post Test Mini Class SEO",
-  "active": false,
+  "active": true,
   "sections": [
     {
       "key": "profile",
@@ -59,7 +59,25 @@
             "Pemilik bisnis",
             "Fresh graduate"
           ],
-          "required": true
+          "required": true,
+          "detailOptions": {
+            "Pekerja kantoran": {
+              "label": "Kamu bekerja di posisi apa?",
+              "placeholder": "Contoh: Marketing Manager, SEO Specialist"
+            },
+            "Freelance": {
+              "label": "Kamu freelance di bidang apa?",
+              "placeholder": "Contoh: Content Writer, SEO Consultant"
+            },
+            "Pemilik bisnis": {
+              "label": "Apa nama atau jenis bisnis kamu?",
+              "placeholder": "Contoh: Toko Kopi Senja, bisnis kuliner"
+            },
+            "Fresh graduate": {
+              "label": "Apa nama kampus kamu?",
+              "placeholder": "Contoh: Universitas Padjadjaran"
+            }
+          }
         },
         {
           "key": "p1_goal",
@@ -73,6 +91,14 @@
           ],
           "required": true,
           "allowOther": true
+        },
+        {
+          "key": "p1_pekerjaan.detail",
+          "detailFor": "p1_pekerjaan",
+          "text": "Detail pekerjaan atau nama kampus",
+          "type": "text",
+          "required": true,
+          "options": []
         }
       ]
     },
@@ -140,260 +166,260 @@
           "key": "recap.seo.1",
           "text": "Bagaimana pengaruh AI terhadap kebutuhan SEO?",
           "type": "single",
-          "required": true,
           "options": [
             "AI menghilangkan kebutuhan SEO sepenuhnya",
             "AI mengubah cara kerja SEO, tetapi kebutuhan SEO tetap ada",
             "AI hanya digunakan untuk iklan digital",
             "AI membuat website tidak lagi membutuhkan konten"
           ],
+          "required": true,
           "correctAnswer": "AI mengubah cara kerja SEO, tetapi kebutuhan SEO tetap ada"
         },
         {
           "key": "recap.seo.2",
           "text": "Perubahan arah SEO yang dijelaskan dalam materi adalah dari “ranking di halaman 1” menjadi...",
           "type": "single",
-          "required": true,
           "options": [
             "Mendapatkan lebih banyak followers",
             "Memperbanyak iklan berbayar",
             "Muncul di jawaban AI",
             "Membuat website sebanyak mungkin"
           ],
+          "required": true,
           "correctAnswer": "Muncul di jawaban AI"
         },
         {
           "key": "recap.seo.3",
           "text": "Istilah yang digunakan untuk optimasi agar konten dapat menjadi referensi AI adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "SEM",
             "CRO",
             "GEO",
             "CRM"
           ],
+          "required": true,
           "correctAnswer": "GEO"
         },
         {
           "key": "recap.seo.4",
           "text": "Pada roadmap SEO, aktivitas seperti Technical SEO, Keyword Research, dan On-Page Optimization termasuk dalam tahap...",
           "type": "single",
-          "required": true,
           "options": [
             "Foundation",
             "Building",
             "Optimizing",
             "Reporting"
           ],
+          "required": true,
           "correctAnswer": "Foundation"
         },
         {
           "key": "recap.seo.5",
           "text": "Aktivitas yang termasuk dalam tahap “Building” pada roadmap SEO adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Keyword Research",
             "Performance Tracking",
             "Link Building",
             "Data Analysis"
           ],
+          "required": true,
           "correctAnswer": "Link Building"
         },
         {
           "key": "recap.seo.6",
           "text": "Berikut ini yang termasuk skill utama Junior SEO Specialist adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "On-Page SEO, Technical SEO, dan Off-Page SEO",
             "Graphic Design, Video Editing, dan Copywriting",
             "Social Media Ads, Email Marketing, dan CRM",
             "Media Buying, Photography, dan Branding"
           ],
+          "required": true,
           "correctAnswer": "On-Page SEO, Technical SEO, dan Off-Page SEO"
         },
         {
           "key": "recap.seo.7",
           "text": "Berikut ini yang merupakan salah satu metrik untuk mengukur performa SEO adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Organic Traffic",
             "Add to Cart",
             "Shares",
             "Cost per Miles"
           ],
+          "required": true,
           "correctAnswer": "Organic Traffic"
         },
         {
           "key": "recap.seo.8",
           "text": "SEO Writing adalah proses merencanakan dan menulis konten agar...",
           "type": "single",
-          "required": true,
           "options": [
             "Hanya menarik bagi search engine",
             "Relevan dengan kebutuhan pencarian audiens dan mudah ditemukan search engine",
             "Memiliki sebanyak mungkin keyword",
             "Selalu berada di posisi pertama Google"
           ],
+          "required": true,
           "correctAnswer": "Relevan dengan kebutuhan pencarian audiens dan mudah ditemukan search engine"
         },
         {
           "key": "recap.seo.9",
           "text": "Pendekatan yang dianjurkan dalam membuat artikel SEO adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Search-engine-first content",
             "Advertising-first content",
             "People-first content",
             "Keyword-first content"
           ],
+          "required": true,
           "correctAnswer": "People-first content"
         },
         {
           "key": "recap.seo.10",
           "text": "Keyword dasar yang digunakan untuk mengawali proses riset disebut...",
           "type": "single",
-          "required": true,
           "options": [
             "Long-tail keyword",
             "Seed keyword",
             "Commercial keyword",
             "Transactional keyword"
           ],
+          "required": true,
           "correctAnswer": "Seed keyword"
         },
         {
           "key": "recap.seo.11",
           "text": "Jenis keyword yang biasanya lebih spesifik, memiliki persaingan lebih rendah, dan cenderung menghasilkan kualitas conversion lebih baik adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Short-tail keyword",
             "Mid-tail keyword",
             "Long-tail keyword",
             "Seed keyword"
           ],
+          "required": true,
           "correctAnswer": "Long-tail keyword"
         },
         {
           "key": "recap.seo.12",
           "text": "Search intent ketika seseorang ingin mencari informasi mengenai suatu topik disebut...",
           "type": "single",
-          "required": true,
           "options": [
             "Informational",
             "Navigational",
             "Commercial",
             "Transactional"
           ],
+          "required": true,
           "correctAnswer": "Informational"
         },
         {
           "key": "recap.seo.13",
           "text": "Keyword seperti “beli”, “pesan”, “promo”, dan “diskon” biasanya menunjukkan search intent...",
           "type": "single",
-          "required": true,
           "options": [
             "Informational",
             "Navigational",
             "Commercial",
             "Transactional"
           ],
+          "required": true,
           "correctAnswer": "Transactional"
         },
         {
           "key": "recap.seo.14",
           "text": "Menurut materi, panjang karakter title artikel SEO yang disarankan adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "10–20 karakter",
             "20–30 karakter",
             "50–60 karakter",
             "100–150 karakter"
           ],
+          "required": true,
           "correctAnswer": "50–60 karakter"
         },
         {
           "key": "recap.seo.15",
           "text": "Program yang melakukan crawl terhadap halaman website disebut...",
           "type": "single",
-          "required": true,
           "options": [
             "Googlebot",
             "Google Ads",
             "Google Trends",
             "Google Business Profile"
           ],
+          "required": true,
           "correctAnswer": "Googlebot"
         },
         {
           "key": "recap.seo.16",
           "text": "Setelah Googlebot melakukan crawl, Google dapat menyimpan halaman website ke dalam proses...",
           "type": "single",
-          "required": true,
           "options": [
             "Advertising",
             "Indexing",
             "Retargeting",
             "Remarketing"
           ],
+          "required": true,
           "correctAnswer": "Indexing"
         },
         {
           "key": "recap.seo.17",
           "text": "Berikut ini yang termasuk hal penting yang dilihat Googlebot adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Struktur website, URL, dan konten",
             "Jumlah followers, likes, dan comments",
             "Harga produk, diskon, dan voucher",
             "Logo, warna brand, dan font"
           ],
+          "required": true,
           "correctAnswer": "Struktur website, URL, dan konten"
         },
         {
           "key": "recap.seo.18",
           "text": "LCP merupakan metrik yang mengukur...",
           "type": "single",
-          "required": true,
           "options": [
             "Responsivitas website terhadap klik pengguna",
             "Seberapa cepat konten atau elemen terbesar ditampilkan",
             "Jumlah internal link dalam website",
             "Jumlah halaman yang diindeks Google"
           ],
+          "required": true,
           "correctAnswer": "Seberapa cepat konten atau elemen terbesar ditampilkan"
         },
         {
           "key": "recap.seo.19",
           "text": "Internal link adalah link yang menghubungkan halaman dengan...",
           "type": "single",
-          "required": true,
           "options": [
             "Website kompetitor",
             "Halaman relevan di website sendiri",
             "Akun media sosial pengguna",
             "Website iklan berbayar"
           ],
+          "required": true,
           "correctAnswer": "Halaman relevan di website sendiri"
         },
         {
           "key": "recap.seo.20",
           "text": "Tools yang disebutkan dalam materi untuk mengecek loading speed website adalah...",
           "type": "single",
-          "required": true,
           "options": [
             "Google Trends",
             "Google PageSpeed Insights",
             "Google Keyword Planner",
             "Google Merchant Center"
           ],
+          "required": true,
           "correctAnswer": "Google PageSpeed Insights"
         }
       ]
@@ -554,20 +580,20 @@
   ],
   "baseScore": 70,
   "narratives": {
-    "Cari pekerjaan pertama": "Kamu {score}% siap memulai karier pertama sebagai SEO Specialist",
     "Bikin bisnis": "Kamu {score}% siap menerapkan SEO untuk mengembangkan bisnismu",
     "Switch career": "Kamu {score}% siap beralih karier jadi SEO Specialist",
+    "Cari pekerjaan pertama": "Kamu {score}% siap memulai karier pertama sebagai SEO Specialist",
     "Upskill untuk kebutuhan kerjaan": "Kamu {score}% siap meningkatkan kemampuan SEO untuk pekerjaanmu"
   },
   "welcomePoints": [
     "+- 10 menit pengerjaan",
     "Feedback",
     "Quiz recap materi mini class",
-    "Mini asesmen",
-    "Sertiffikat"
+    "Mini asesmen"
   ],
   "defaultNarrative": "Kamu {score}% siap melanjutkan pembelajaran SEO",
-  "certificateNotice": "Sertifikat akan dikirim max. 3 hari kerja.",
-  "welcomeDescription": "Selesaikan langkah terakhir mini class untuk mengulas materi dan mendapatkan sertifikat",
-  "certificateEligibility": "Sertifikat hanya diberikan kepada peserta yang hadir pada seluruh sesi, day 1–3."
+  "certificateNotice": "",
+  "welcomeDescription": "Selesaikan langkah terakhir mini class untuk mengulas materi dan melihat hasil recap kamu",
+  "certificateEligibility": "",
+  "certificateEnabled": false
 }

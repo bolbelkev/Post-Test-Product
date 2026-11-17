@@ -6,6 +6,8 @@ export interface Question {
   options: string[];
   required: boolean;
   allowOther?: boolean;
+  detailOptions?: Record<string, { label: string; placeholder: string }>;
+  detailFor?: string;
   correctAnswer?: string;
   points?: Record<string, number>;
   countPoints?: number[];
@@ -23,6 +25,7 @@ export interface QuizConfig {
   title: string;
   batch: string;
   active: boolean;
+  certificateEnabled?: boolean;
   welcomeDescription: string;
   welcomePoints: string[];
   certificateNotice: string;

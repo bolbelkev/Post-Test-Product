@@ -17,7 +17,8 @@ function pagesFor(config: QuizConfig): Page[] {
   const pages: Page[] = [];
   for (const section of config.sections) {
     if (section.kind === 'recap') pages.push({ kind: 'intro', section });
-    for (let i = 0; i < section.questions.length; i += section.perPage) pages.push({ kind: 'questions', section, questions: section.questions.slice(i, i + section.perPage) });
+    const visibleQuestions = section.questions.filter(q=>!q.detailFor);
+    for (let i = 0; i < visibleQuestions.length; i += section.perPage) pages.push({ kind: 'questions', section, questions: visibleQuestions.slice(i, i + section.perPage) });
     if (section.kind === 'profile') pages.push({ kind: 'confirm', section });
     if (section.kind === 'recap') pages.push({ kind: 'recapResult', section });
   }
@@ -106,6 +107,7 @@ function ParticipantApp() {
       progressRef.current = next;
       try {
         await flush();
+        if (target?.kind === 'result' && config?.certificateEnabled === false && participant?.status !== 'completed') await request('complete','POST',{});
         const p = await request<Participant>('session'); applyParticipant(p);
         if (target?.kind === 'recapResult') setProcessing(true);
       } catch (e) { progressRef.current = previous; throw e; }
@@ -144,17 +146,17 @@ function ParticipantApp() {
       {!participant ? <div className="w-full max-w-[420px] mx-auto py-3">
         <div className="text-center mb-4"><span className="text-[11px] text-[#EA5543] font-bold">Penutup Sesi Mini Class</span><h1 className="font-heading text-lg sm:text-xl font-extrabold mt-2">{config.title}</h1><p className="text-xs text-gray-500 mt-2">{config.welcomeDescription}</p></div>
         <div className="bg-[#F9EDDE]/30 border border-[#F9EDDE] rounded-2xl p-2.5 mb-3 grid grid-cols-2 gap-x-3 gap-y-2">{config.welcomePoints.map((text, i) => { const Icon = icons[i % icons.length]; return <div key={i} className="flex items-center gap-2"><Icon className="w-4 h-4 shrink-0 text-[#BD214C]" /><span className="text-[11px] font-bold">{text}</span></div>; })}</div>
-        <label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
+        {config.certificateEnabled !== false && <><label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
         <input id="certificate-name" autoComplete="name" maxLength={150} value={name} onChange={e => setName(e.target.value)} placeholder="Tulis nama yang ingin tercetak di sertifikat" className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs" />
-        <p className="text-[10px] text-gray-500 mt-1 mb-3">Isi minimal 3 karakter sesuai nama yang ingin tercetak di sertifikat.</p>
-        <button disabled={name.trim().length < 3 || busy || !config.active} onClick={() => void start()} className="w-full py-3 rounded-xl bg-[#BD214C] text-white text-sm font-bold disabled:opacity-40 flex justify-center items-center gap-2">{busy ? 'Menyimpan nama…' : config.active ? 'Mulai Post Test Sekarang' : 'Post test belum dibuka'}<ArrowRight className="w-4 h-4" /></button>
+        <p className="text-[10px] text-gray-500 mt-1 mb-3">Isi minimal 3 karakter sesuai nama yang ingin tercetak di sertifikat.</p></>}
+        <button disabled={(config.certificateEnabled !== false && name.trim().length < 3) || busy || !config.active} onClick={() => void start()} className="w-full py-3 rounded-xl bg-[#BD214C] text-white text-sm font-bold disabled:opacity-40 flex justify-center items-center gap-2">{busy ? 'Memulai…' : config.active ? 'Mulai Post Test Sekarang' : 'Post test belum dibuka'}<ArrowRight className="w-4 h-4" /></button>
       </div> : <>
         {page?.kind === 'questions' && <><p className="w-full max-w-[420px] text-xs font-semibold text-[#BD214C]">{page.section?.title} · {sectionPosition}/{sectionPages.length}</p><DatabaseQuestions questions={page.questions!} answers={answers} onAnswer={changeAnswer} onNext={() => void move(1)} disabled={busy} grouped={page.section?.kind === 'feedback'} nextLabel={page.section?.kind === 'recap' ? 'Soal berikutnya' : 'Lanjut'} /></>}
         {page?.kind === 'confirm' && <div className="w-full max-w-[420px] py-4"><h2 className="font-heading text-lg font-bold text-center mb-4">Konfirmasi Jawaban Kamu</h2>{page.section!.questions.map(q => <div key={q.key} className="rounded-xl border bg-gray-50 p-3 mb-2"><p className="text-[10px] text-gray-500">{q.text}</p><p className="text-sm font-semibold break-words">{String(answers[q.key] || 'Belum diisi')}</p></div>)}<button disabled={busy} onClick={() => void move(1)} className="w-full bg-[#BD214C] text-white rounded-xl py-3 mt-3">Sudah benar, lanjut</button></div>}
         {page?.kind === 'intro' && <div className="w-full max-w-[420px] text-center py-8"><BookOpen className="w-10 h-10 mx-auto text-[#BD214C] mb-3" /><h2 className="font-heading text-xl font-bold">Yuk, recap materi Mini Class-nya!</h2><p className="text-xs text-gray-500 my-3">Uji seberapa dalam pemahaman materi kamu lewat {recapQuestions.length} pertanyaan pilihan ganda singkat.</p><button disabled={busy} onClick={() => void move(1)} className="w-full bg-[#BD214C] text-white rounded-xl py-3">Mulai recap materi</button></div>}
         {page?.kind === 'recapResult' && (processing ? <RecapProcessing onComplete={() => setProcessing(false)} /> : <RecapMiniResult correctCount={participant.recapCorrect} totalQuestions={participant.recapTotal} onContinue={() => void move(1)} />)}
         {page?.kind === 'result' && record && <ResultScreen submission={record} offer={config.offer} allAnswers={answers}
-          certificateForm={<LeadForm initialName={participant.name} initialEmail={participant.email || ''} saved={participant.status === 'completed'} notice={config.certificateNotice} eligibility={config.certificateEligibility} onSubmit={contact => complete(contact.email)} />}
+          certificateForm={config.certificateEnabled === false ? undefined : <LeadForm initialName={participant.name} initialEmail={participant.email || ''} saved={participant.status === 'completed'} notice={config.certificateNotice} eligibility={config.certificateEligibility} onSubmit={contact => complete(contact.email)} />}
           onCtaClick={() => { void request('cta', 'POST', {}).catch(e => setError(e.message)); }} onRetake={() => void retake()} />}
       </>}
     </main>

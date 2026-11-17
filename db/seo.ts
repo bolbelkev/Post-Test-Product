@@ -1,4 +1,5 @@
 import type {QuizConfig,Question} from '../shared/model.ts';
+import {withoutSeoCertificate} from './seo-flow.ts';
 export interface SeoSource {questions:{number:number;question:string;options:{text:string;yellow:boolean}[]}[]}
 export function seoConfig(template:QuizConfig,source:SeoSource):QuizConfig {
   const c=JSON.parse(JSON.stringify(template).replaceAll('Performance Marketing','SEO').replaceAll('performance marketing','SEO').replaceAll('Performance Marketer','SEO Specialist').replaceAll('Marketplace','SEO').replaceAll('marketplace','SEO')) as QuizConfig;
@@ -31,5 +32,5 @@ export function seoConfig(template:QuizConfig,source:SeoSource):QuizConfig {
       });section.perPage=1;
     } else section.questions=section.questions.map(q=>({...q,...changes[q.key]}));
   }
-  return c;
+  return withoutSeoCertificate(c);
 }

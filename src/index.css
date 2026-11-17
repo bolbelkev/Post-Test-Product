@@ -19,6 +19,10 @@ body {
   color: #231F20;
 }
 
+@keyframes job-detail-open { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.job-detail { animation: job-detail-open 220ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .job-detail { animation: none; } }
+
 .post-test button {
   transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, scale 140ms ease, filter 140ms ease;
 }

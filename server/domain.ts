@@ -53,13 +53,16 @@ export function scores(config: QuizConfig, raw: Record<string, Answer>) {
 export function validateConfig(raw: unknown): QuizConfig {
   if (!raw || typeof raw !== 'object') throw new HttpError(400, 'Konfigurasi tidak valid.');
   const c = raw as QuizConfig;
-  const requiredStrings = [c.title, c.batch, c.welcomeDescription, c.certificateNotice, c.certificateEligibility, c.defaultNarrative, c.offer?.title, c.offer?.ctaText];
+  if (c.certificateEnabled !== undefined && typeof c.certificateEnabled !== 'boolean') throw new HttpError(400, 'Pengaturan sertifikat tidak valid.');
+  const requiredStrings = [c.title, c.batch, c.welcomeDescription, ...(c.certificateEnabled === false ? [] : [c.certificateNotice, c.certificateEligibility]), c.defaultNarrative, c.offer?.title, c.offer?.ctaText];
   if (requiredStrings.some(v => typeof v !== 'string' || !v.trim() || v.length > 2000) || typeof c.active !== 'boolean' || !Number.isFinite(c.baseScore) || c.baseScore < 0 || c.baseScore > 100) throw new HttpError(400, 'Lengkapi judul, batch, informasi sertifikat, dan penawaran.');
   if (!Array.isArray(c.sections) || c.sections.length !== 5 || new Set(c.sections.map(s => s.kind)).size !== 5 || c.sections.some(s => !['profile','feedback','recap','assessment','preferences'].includes(s.kind))) throw new HttpError(400, 'Pertahankan lima jenis section PM.');
   if (new Set(c.sections.map(s => s.key)).size !== 5 || c.sections.some(s => !/^[a-z][a-z0-9_-]*$/.test(s.key) || !s.title || !Number.isInteger(s.perPage) || s.perPage < 1 || s.perPage > 2 || !Array.isArray(s.questions) || !s.questions.length)) throw new HttpError(400, 'Section harus berisi pertanyaan dan 1–2 pertanyaan per layar.');
   const qs = allQuestions(c);
   if (qs.length > 200 || new Set(qs.map(q => q.key)).size !== qs.length) throw new HttpError(400, 'ID pertanyaan harus unik, maksimal 200 soal.');
   for (const q of qs) {
+    if(q.detailFor && (q.type!=='text' || !qs.some(parent=>parent.key===q.detailFor && parent.detailOptions))) throw new HttpError(400,'Pertanyaan detail tidak valid.');
+    if(q.detailOptions && (q.type!=='single' || !q.options.every(option=>Object.hasOwn(q.detailOptions!,option)) || Object.values(q.detailOptions).some(d=>!d || typeof d.label!=='string' || typeof d.placeholder!=='string') || !qs.some(detail=>detail.key===q.key+'.detail' && detail.detailFor===q.key && detail.required))) throw new HttpError(400,'Detail pilihan tidak lengkap.');
     if (!/^[a-z][a-z0-9_.-]{0,79}$/.test(q.key) || ['__proto__','constructor','prototype'].includes(q.key) || typeof q.text !== 'string' || !q.text.trim() || q.text.length > 2000 || !['single','multi','rating','text'].includes(q.type) || typeof q.required !== 'boolean' || !Array.isArray(q.options) || q.options.length > 20 || q.options.some(o => typeof o !== 'string' || !o.trim() || o.length > 500) || new Set(q.options).size !== q.options.length) throw new HttpError(400, 'ID, teks, tipe, atau opsi pertanyaan tidak valid.');
     if (['single','multi'].includes(q.type) && !q.options.length) throw new HttpError(400, 'Pertanyaan pilihan harus punya opsi.');
     if (c.sections.find(s => s.questions.includes(q))?.kind === 'recap' && (q.type !== 'single' || !q.correctAnswer || !q.options.includes(q.correctAnswer))) throw new HttpError(400, 'Soal recap harus memiliki satu kunci yang ada dalam opsi.');

@@ -20,6 +20,7 @@ interface QuestionCardProps {
   children?: React.ReactNode;
   customOption?: { value: string; onChange: (value: string) => void };
   showNext?: boolean;
+  hideNext?: boolean;
 }
 
 // Icon helper to replicate Kodree's visual option style
@@ -91,6 +92,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   children,
   customOption,
   showNext = false,
+  hideNext = false,
 }) => {
   return (
     <div className="w-full max-w-[420px] mx-auto px-4 py-2 flex flex-col justify-center">
@@ -171,7 +173,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       {children}
 
       {/* Next button */}
-      {(isMultiSelect || children || showNext) && (
+      {!hideNext && (isMultiSelect || children || showNext) && (
         <div className="mt-3.5 flex justify-center">
           <button
             type="button"

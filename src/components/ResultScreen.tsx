@@ -71,7 +71,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       {/* 1. Header & Title */}
       <div className="text-center">
         <h1 className="font-heading text-lg sm:text-xl font-bold text-[#231F20]">
-          halo {submission.user.namaLengkap}, hasil recap sudah siap!
+          {submission.user.namaLengkap ? `halo ${submission.user.namaLengkap}, hasil recap sudah siap!` : 'Hasil recap kamu sudah siap!'}
         </h1>
       </div>
 
