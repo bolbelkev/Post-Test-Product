@@ -1,21 +1,22 @@
 {
   "batch": "Marketplace Desember 2026",
   "offer": {
-    "image": "/images/tambahan-diskon-5-persen-mini-class.png",
+    "image": "/images/voucher-marketplace-desember.png",
     "rules": [],
     "title": "Bootcamp Marketplace — Boleh Belajar",
-    "ctaUrl": "https://wa.me/6281944365758?text=halo%20Minbel%2C%20saya%20mau%20klaim%20promo%20post%20test%20mini%20class!",
+    "ctaUrl": "https://wa.me/6281912345786?text=halo%20Minbel%2C%20saya%20mau%20klaim%20promo%20post%20test%20mini%20class%20Marketplace%21",
     "ctaText": "Lihat Program Bootcamp Marketplace",
     "benefits": [
-      "Praktik hands on handle real brand untuk tambah porfolio",
-      "dibimbing instruktur praktisi",
-      "Agency based curriculum",
-      "bisa dicicil up to 3x"
+      "Agency-based curriculum",
+      "Hands-on store audit & optimization",
+      "Learn from active practitioners",
+      "Lifetime access to class recording",
+      "Bisa dicicil hingga 3x"
     ],
-    "imageAlt": "Tambahan diskon 5% khusus peserta Mini Class"
+    "imageAlt": "Diskon tambahan 5% Marketplace Specialist Bootcamp khusus peserta Mini Class; tidak dapat digabung dengan promo lainnya"
   },
   "title": "Post Test Mini Class Marketplace — Desember 2026",
-  "active": false,
+  "active": true,
   "sections": [
     {
       "key": "profile",
@@ -61,21 +62,21 @@
           ],
           "required": true,
           "detailOptions": {
-            "Pekerja kantoran": {
-              "label": "Kamu bekerja di posisi apa?",
-              "placeholder": "Contoh: Marketplace Manager, E-commerce Specialist"
-            },
             "Freelance": {
               "label": "Kamu freelance di bidang apa?",
               "placeholder": "Contoh: Admin Marketplace, Desainer"
+            },
+            "Fresh graduate": {
+              "label": "Apa nama kampus kamu?",
+              "placeholder": "Contoh: Universitas Padjadjaran"
             },
             "Pemilik bisnis": {
               "label": "Apa nama atau jenis bisnis kamu?",
               "placeholder": "Contoh: Toko Kopi Senja, bisnis kuliner"
             },
-            "Fresh graduate": {
-              "label": "Apa nama kampus kamu?",
-              "placeholder": "Contoh: Universitas Padjadjaran"
+            "Pekerja kantoran": {
+              "label": "Kamu bekerja di posisi apa?",
+              "placeholder": "Contoh: Marketplace Manager, E-commerce Specialist"
             }
           }
         },
@@ -94,11 +95,11 @@
         },
         {
           "key": "p1_pekerjaan.detail",
-          "detailFor": "p1_pekerjaan",
           "text": "Detail pekerjaan atau nama kampus",
           "type": "text",
+          "options": [],
           "required": true,
-          "options": []
+          "detailFor": "p1_pekerjaan"
         }
       ]
     },
@@ -526,10 +527,10 @@
     "Quiz recap materi mini class",
     "Mini asesmen"
   ],
+  "contactAtStart": true,
   "defaultNarrative": "Kamu {score}% siap melangkah ke level berikutnya di Marketplace",
   "certificateNotice": "",
-  "welcomeDescription": "Selesaikan langkah terakhir mini class untuk mengulas materi dan melihat hasil recap kamu",
-  "certificateEligibility": "",
   "certificateEnabled": false,
-  "contactAtStart": true
+  "welcomeDescription": "Selesaikan langkah terakhir mini class untuk mengulas materi dan melihat hasil recap kamu",
+  "certificateEligibility": ""
 }

@@ -57,7 +57,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   ctaUrl.searchParams.set('utm_medium', 'quiz');
   ctaUrl.searchParams.set('utm_campaign', 'mini_class_pm');
   const matched = offer.rules.filter(rule => rule.values.includes(String(allAnswers[rule.key]))).map(rule => rule.text);
-  const benefits = [...new Set(matched.length ? [...matched, ...offer.benefits] : offer.benefits)].slice(0, 4);
+  const benefits = [...new Set(matched.length ? [...matched, ...offer.benefits] : offer.benefits)].slice(0, Math.max(4, offer.benefits.length));
 
   const handleCta = () => {
     setClicked(true);
