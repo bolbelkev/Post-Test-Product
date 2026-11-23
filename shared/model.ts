@@ -26,6 +26,7 @@ export interface QuizConfig {
   batch: string;
   active: boolean;
   certificateEnabled?: boolean;
+  contactAtStart?: boolean;
   welcomeDescription: string;
   welcomePoints: string[];
   certificateNotice: string;
@@ -40,6 +41,7 @@ export interface Participant {
   id: string;
   name: string;
   email: string | null;
+  phone?: string | null;
   status: 'in_progress' | 'completed';
   step: number;
   answers: Record<string, Answer>;

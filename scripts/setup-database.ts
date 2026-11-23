@@ -8,6 +8,7 @@ try {
   const db = database();
   const migration = await readFile(new URL('../db/migrations/001_initial.sql', import.meta.url),'utf8');
   await db.query(migration);
+  await db.query(await readFile(new URL('../db/migrations/002_contact_phone.sql', import.meta.url),'utf8'));
   validateConfig(initialConfig);
   await db.query("INSERT INTO quiz_configs(slug,config) VALUES('pm',$1) ON CONFLICT(slug) DO NOTHING", [JSON.stringify(initialConfig)]);
   console.log('Tabel dan konfigurasi PM siap. Konfigurasi yang sudah ada tidak ditimpa.');

@@ -56,7 +56,7 @@ export function createHandler(getDatabase: () => Database = database) {
         // Shared DB limit applies across Vercel instances; cookies hold only a random identifier.
         const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
         await limit(db, `start:${hash(ip)}`, 2000);
-        const result = await startParticipant(db, body.name, slug);
+        const result = await startParticipant(db, body.name, slug, {email:body.email,phone:body.phone});
         res.setHeader('Set-Cookie', makeCookie(participantCookie, result.sessionToken, 30*86400));
         return send(201, result.participant);
       }

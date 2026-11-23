@@ -13,7 +13,24 @@ import type { Database } from '../server/db.ts';
 import { marketplaceConfig } from '../db/marketplace.ts';
 import {seoConfig} from '../db/seo.ts';
 import {withoutSeoCertificate} from '../db/seo-flow.ts';
+import {marketplaceDecemberConfig} from '../db/marketplace-december.ts';
 let engine:PGlite;let db:Database;let server:Server;let base:string;
+test('Marketplace December collects contacts at start, preserves them on completion and exports phone; recap remains identical',async()=>{
+  const source:import('../db/marketplace.ts').MarketplaceSource=JSON.parse(await readFile('docs/quiz-archive/marketplace-source.json','utf8'));
+  const original=marketplaceConfig(initialConfig,source);
+  const c=validateConfig(marketplaceDecemberConfig(original));
+  assert.deepEqual(c.sections.find(s=>s.kind==='recap'),original.sections.find(s=>s.kind==='recap'));
+  assert.equal(c.certificateEnabled,false);assert.equal(c.contactAtStart,true);assert.equal(c.active,false);
+  c.active=true;await db.query('INSERT INTO quiz_configs(slug,config) VALUES($1,$2)',['mp-dec-test',JSON.stringify(c)]);
+  await assert.rejects(()=>startParticipant(db,'Peserta Desember','mp-dec-test'));
+  await assert.rejects(()=>startParticipant(db,'Peserta Desember','mp-dec-test',{email:'bad',phone:'081234567890'}));
+  await assert.rejects(()=>startParticipant(db,'Peserta Desember','mp-dec-test',{email:'mp@example.test',phone:'abc'}));
+  const p=await startParticipant(db,'Peserta Desember','mp-dec-test',{email:'MP@example.test',phone:'+62 812-3456-7890'});
+  assert.equal(p.participant.email,'mp@example.test');assert.equal(p.participant.phone,'+6281234567890');assert.equal(p.participant.name,'Peserta Desember');
+  for(const q of allQuestions(c).filter(q=>q.required)) await saveAnswer(db,p.sessionToken,q.key,q.type==='text'?'Marketplace Manager':q.type==='rating'?4:q.type==='multi'?[q.options[0]]:q.options[0]);
+  const done=await completeParticipant(db,p.sessionToken,undefined);assert.equal(done.status,'completed');assert.equal(done.email,'mp@example.test');assert.equal(done.phone,'+6281234567890');
+  const csv=await exportCsv(db,'','mp-dec-test');assert(csv.includes('Nomor HP'));assert(csv.includes('mp@example.test'));assert(csv.includes('+6281234567890'));assert(csv.includes('Marketplace Manager'));
+});
 test('SEO without certificate starts anonymously, requires job details, and completes without email; PM still requires name',async()=>{
   const c=validateConfig(withoutSeoCertificate(initialConfig));
   assert.equal(c.certificateEnabled,false);
@@ -96,6 +113,7 @@ test('multiple quiz links isolate sessions and exports; inactive links reject ex
 before(async()=>{
   engine=new PGlite();
   await engine.exec(await readFile(new URL('../db/migrations/001_initial.sql',import.meta.url),'utf8'));
+  await engine.exec(await readFile(new URL('../db/migrations/002_contact_phone.sql',import.meta.url),'utf8'));
   db={query:async(sql,values)=>engine.query(sql,values),transaction:work=>engine.transaction(tx=>work({query:async(sql,values)=>tx.query(sql,values)}))};
   await db.query("INSERT INTO quiz_configs(slug,config) VALUES('pm',$1)",[JSON.stringify(initialConfig)]);
   await db.query('INSERT INTO admin_users(id,email,password_hash) VALUES($1,$2,$3)',[randomUUID(),'admin@example.test',hashPassword('test-password-1234')]);

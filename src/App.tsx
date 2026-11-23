@@ -31,6 +31,8 @@ function ParticipantApp() {
   const [config, setConfig] = useState<QuizConfig | null>(null);
   const [participant, setParticipant] = useState<Participant | null>(null);
   const [name, setName] = useState('');
+  const [contactEmail,setContactEmail]=useState('');
+  const [phone,setPhone]=useState('');
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -83,7 +85,7 @@ function ParticipantApp() {
     try { await work(); } catch (e) { setError((e as Error).message); } finally { busyRef.current = false; setBusy(false); }
   };
   const start = () => guarded(async () => {
-    const p = await request<Participant>('session', 'POST', { name: name.trim() });
+    const p = await request<Participant>('session', 'POST', { name: name.trim(), ...(config?.contactAtStart?{email:contactEmail.trim(),phone:phone.trim()}: {}) });
     epoch.current++; dirty.current.clear(); applyParticipant(p);
   });
   const move = async (direction: number) => {
@@ -120,7 +122,7 @@ function ParticipantApp() {
   const retake = () => guarded(async () => {
     await queue.current.catch(() => {});
     if (dirty.current.size) await flush();
-    epoch.current++; dirty.current.clear(); answersRef.current = {}; progressRef.current = 0; setParticipant(null); setAnswers({}); setStep(0);
+    epoch.current++; dirty.current.clear(); answersRef.current = {}; progressRef.current = 0; setParticipant(null); setAnswers({}); setStep(0); setName('');setContactEmail('');setPhone('');
     setConfig(await request<QuizConfig>('config'));
   });
 
@@ -146,10 +148,15 @@ function ParticipantApp() {
       {!participant ? <div className="w-full max-w-[420px] mx-auto py-3">
         <div className="text-center mb-4"><span className="text-[11px] text-[#EA5543] font-bold">Penutup Sesi Mini Class</span><h1 className="font-heading text-lg sm:text-xl font-extrabold mt-2">{config.title}</h1><p className="text-xs text-gray-500 mt-2">{config.welcomeDescription}</p></div>
         <div className="bg-[#F9EDDE]/30 border border-[#F9EDDE] rounded-2xl p-2.5 mb-3 grid grid-cols-2 gap-x-3 gap-y-2">{config.welcomePoints.map((text, i) => { const Icon = icons[i % icons.length]; return <div key={i} className="flex items-center gap-2"><Icon className="w-4 h-4 shrink-0 text-[#BD214C]" /><span className="text-[11px] font-bold">{text}</span></div>; })}</div>
-        {config.certificateEnabled !== false && <><label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
+        {config.contactAtStart&&<div className="space-y-3 mb-4">
+          <label className="block text-xs font-semibold">Nama lengkap<input required autoComplete="name" maxLength={150} value={name} onChange={e=>setName(e.target.value)} placeholder="Tulis nama lengkap kamu" className="w-full rounded-xl border border-gray-300 px-3 py-2 mt-1 text-sm"/></label>
+          <label className="block text-xs font-semibold">Nomor HP / WhatsApp<input required type="tel" autoComplete="tel" maxLength={30} value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Contoh: 081234567890" className="w-full rounded-xl border border-gray-300 px-3 py-2 mt-1 text-sm"/></label>
+          <label className="block text-xs font-semibold">Email<input required type="email" autoComplete="email" maxLength={254} value={contactEmail} onChange={e=>setContactEmail(e.target.value)} placeholder="Contoh: nama@email.com" className="w-full rounded-xl border border-gray-300 px-3 py-2 mt-1 text-sm"/></label>
+        </div>}
+        {!config.contactAtStart && config.certificateEnabled !== false && <><label htmlFor="certificate-name" className="block text-xs font-semibold mb-1">Nama untuk sertifikat</label>
         <input id="certificate-name" autoComplete="name" maxLength={150} value={name} onChange={e => setName(e.target.value)} placeholder="Tulis nama yang ingin tercetak di sertifikat" className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs" />
         <p className="text-[10px] text-gray-500 mt-1 mb-3">Isi minimal 3 karakter sesuai nama yang ingin tercetak di sertifikat.</p></>}
-        <button disabled={(config.certificateEnabled !== false && name.trim().length < 3) || busy || !config.active} onClick={() => void start()} className="w-full py-3 rounded-xl bg-[#BD214C] text-white text-sm font-bold disabled:opacity-40 flex justify-center items-center gap-2">{busy ? 'Memulai…' : config.active ? 'Mulai Post Test Sekarang' : 'Post test belum dibuka'}<ArrowRight className="w-4 h-4" /></button>
+        <button disabled={((config.certificateEnabled !== false||config.contactAtStart) && name.trim().length < 3) || (config.contactAtStart&&(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim())||!/^\+?[0-9]{9,15}$/.test(phone.replace(/[\s()-]/g,'')))) || busy || !config.active} onClick={() => void start()} className="w-full py-3 rounded-xl bg-[#BD214C] text-white text-sm font-bold disabled:opacity-40 flex justify-center items-center gap-2">{busy ? 'Memulai…' : config.active ? 'Mulai Post Test Sekarang' : 'Post test belum dibuka'}<ArrowRight className="w-4 h-4" /></button>
       </div> : <>
         {page?.kind === 'questions' && <><p className="w-full max-w-[420px] text-xs font-semibold text-[#BD214C]">{page.section?.title} · {sectionPosition}/{sectionPages.length}</p><DatabaseQuestions questions={page.questions!} answers={answers} onAnswer={changeAnswer} onNext={() => void move(1)} disabled={busy} grouped={page.section?.kind === 'feedback'} nextLabel={page.section?.kind === 'recap' ? 'Soal berikutnya' : 'Lanjut'} /></>}
         {page?.kind === 'confirm' && <div className="w-full max-w-[420px] py-4"><h2 className="font-heading text-lg font-bold text-center mb-4">Konfirmasi Jawaban Kamu</h2>{page.section!.questions.map(q => <div key={q.key} className="rounded-xl border bg-gray-50 p-3 mb-2"><p className="text-[10px] text-gray-500">{q.text}</p><p className="text-sm font-semibold break-words">{String(answers[q.key] || 'Belum diisi')}</p></div>)}<button disabled={busy} onClick={() => void move(1)} className="w-full bg-[#BD214C] text-white rounded-xl py-3 mt-3">Sudah benar, lanjut</button></div>}

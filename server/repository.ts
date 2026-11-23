@@ -20,15 +20,24 @@ export async function readParticipant(db: Database, sessionToken?: string): Prom
   const entries = (await db.query('SELECT question_key,answer FROM participant_answers WHERE session_id=$1', [row.id])).rows;
   const answers = effectiveAnswers(row.config_snapshot, Object.fromEntries(entries.map(e => [e.question_key, e.answer])));
   const computed = scores(row.config_snapshot, answers);
-  return { id: row.id, name: row.name, email: row.email, status: row.status, step: row.step, answers, config: publicConfig(row.config_snapshot), ...computed, clickedCta: !!row.clicked_cta_at };
+  return { id: row.id, name: row.name, email: row.email, phone:row.phone, status: row.status, step: row.step, answers, config: publicConfig(row.config_snapshot), ...computed, clickedCta: !!row.clicked_cta_at };
 }
-export async function startParticipant(db: Database, name: unknown, slug = 'pm') {
+export async function startParticipant(db: Database, name: unknown, slug = 'pm', contact?:{email?:unknown;phone?:unknown}) {
   const { config } = await loadConfig(db, slug);
-  if (config.certificateEnabled !== false && (typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 150)) throw new HttpError(400, 'Nama sertifikat harus 3–150 karakter.');
-  const participantName = config.certificateEnabled === false ? '' : (name as string).trim();
+  if ((config.certificateEnabled !== false || config.contactAtStart) && (typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 150)) throw new HttpError(400, 'Nama harus 3–150 karakter.');
+  const participantName = config.certificateEnabled === false && !config.contactAtStart ? '' : (name as string).trim();
+  let email:string|null=null;let phone:string|null=null;
+  if(config.contactAtStart){
+    if(typeof contact?.email!=='string'||contact.email.trim().length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim()))throw new HttpError(400,'Isi alamat email yang valid.');
+    if(typeof contact.phone!=='string'||contact.phone.length>30)throw new HttpError(400,'Isi nomor HP yang valid.');
+    phone=contact.phone.replace(/[\s()-]/g,'');
+    if(!/^\+?[0-9]{9,15}$/.test(phone))throw new HttpError(400,'Nomor HP harus terdiri dari 9–15 digit.');
+    email=contact.email.trim().toLowerCase();
+  }
   if (!config.active) throw new HttpError(403, 'Post test belum dibuka.');
   const sessionToken = token();
-  await db.query('INSERT INTO participant_sessions(id,token_hash,quiz_slug,name,config_snapshot) VALUES($1,$2,$3,$4,$5)', [randomUUID(), hash(sessionToken), slug, participantName, JSON.stringify(config)]);
+  if(config.contactAtStart) await db.query('INSERT INTO participant_sessions(id,token_hash,quiz_slug,name,config_snapshot,email,phone) VALUES($1,$2,$3,$4,$5,$6,$7)', [randomUUID(), hash(sessionToken), slug, participantName, JSON.stringify(config),email,phone]);
+  else await db.query('INSERT INTO participant_sessions(id,token_hash,quiz_slug,name,config_snapshot) VALUES($1,$2,$3,$4,$5)', [randomUUID(), hash(sessionToken), slug, participantName, JSON.stringify(config)]);
   return { sessionToken, participant: await readParticipant(db, sessionToken) };
 }
 export async function saveAnswer(db: Database, sessionToken: string | undefined, key: unknown, raw: unknown) {
@@ -56,7 +65,7 @@ export async function completeParticipant(db: Database, sessionToken: string | u
   const row = await sessionRow(db, sessionToken);
   const requiresEmail = row.config_snapshot.certificateEnabled !== false;
   if (requiresEmail && (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))) throw new HttpError(400, 'Email tidak valid.');
-  const contactEmail = requiresEmail ? (email as string).trim().toLowerCase() : null;
+  const contactEmail = requiresEmail ? (email as string).trim().toLowerCase() : row.email;
   if (row.status === 'completed') {
     if (row.email !== contactEmail) throw new HttpError(409, 'Email untuk sesi ini sudah tersimpan.');
     return readParticipant(db, sessionToken);
@@ -86,7 +95,7 @@ export async function updateConfig(db: Database, raw: unknown, revision: unknown
 }
 export async function listParticipants(db: Database, page: number, status: string, search: string, slug = 'pm') {
   const filter = status === 'completed' || status === 'in_progress' ? status : '';
-  const rows = (await db.query(`SELECT id,name,email,status,step,recap_correct,recap_total,match_score,created_at,completed_at,config_snapshot,config_snapshot->>'batch' AS batch,
+  const rows = (await db.query(`SELECT id,name,email,phone,status,step,recap_correct,recap_total,match_score,created_at,completed_at,config_snapshot,config_snapshot->>'batch' AS batch,
     (SELECT COALESCE(jsonb_object_agg(question_key,answer),'{}'::jsonb) FROM participant_answers WHERE session_id=participant_sessions.id) AS saved_answers
     FROM participant_sessions WHERE quiz_slug=$4 AND ($1='' OR status=$1) AND ($2='' OR name ILIKE $2 OR email ILIKE $2)
     ORDER BY created_at DESC,id LIMIT 50 OFFSET $3`, [filter, search ? `%${search.slice(0,150)}%` : '', (page - 1) * 50, slug])).rows;
@@ -102,11 +111,11 @@ export async function exportCsv(db: Database, status: string, slug = 'pm') {
     columns.set(label, key);
   }
   const labels = [...columns.keys()];
-  const headers = ['ID sesi','Nama sertifikat','Email','Batch','Status','Mulai (UTC)','Selesai (UTC)','Progres layar','Recap benar','Total soal recap','Skor asesmen','Klik CTA', ...labels];
+  const headers = ['ID sesi','Nama sertifikat','Email','Nomor HP','Batch','Status','Mulai (UTC)','Selesai (UTC)','Progres layar','Recap benar','Total soal recap','Skor asesmen','Klik CTA', ...labels];
   const data = rows.map(row => {
     const answers = Object.fromEntries(Object.entries(row.responses).map(([key,e]: [string,any]) => [key,e.answer]));
     const computed = scores(row.config_snapshot, answers);
-    return [row.id,row.name,row.email,row.config_snapshot.batch,row.config_snapshot.certificateEnabled===false ? (row.status==='completed'?'Selesai':'Belum selesai') : row.status === 'completed' ? 'Email tersimpan' : 'Belum melengkapi email',row.created_at.toISOString(),row.completed_at?.toISOString(),row.step,computed.recapCorrect,computed.recapTotal,computed.score,!!row.clicked_cta_at,...labels.map(label => {
+    return [row.id,row.name,row.email,row.phone,row.config_snapshot.batch,row.config_snapshot.certificateEnabled===false ? (row.status==='completed'?'Selesai':'Belum selesai') : row.status === 'completed' ? 'Email tersimpan' : 'Belum melengkapi email',row.created_at.toISOString(),row.completed_at?.toISOString(),row.step,computed.recapCorrect,computed.recapTotal,computed.score,!!row.clicked_cta_at,...labels.map(label => {
       const key = columns.get(label)!; const entry = row.responses[key];
       return entry && `${key}: ${entry.question.text}` === label ? entry.answer : '';
     })];

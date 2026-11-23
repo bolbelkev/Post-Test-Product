@@ -54,6 +54,7 @@ export function validateConfig(raw: unknown): QuizConfig {
   if (!raw || typeof raw !== 'object') throw new HttpError(400, 'Konfigurasi tidak valid.');
   const c = raw as QuizConfig;
   if (c.certificateEnabled !== undefined && typeof c.certificateEnabled !== 'boolean') throw new HttpError(400, 'Pengaturan sertifikat tidak valid.');
+  if (c.contactAtStart !== undefined && typeof c.contactAtStart !== 'boolean') throw new HttpError(400,'Pengaturan kontak tidak valid.');
   const requiredStrings = [c.title, c.batch, c.welcomeDescription, ...(c.certificateEnabled === false ? [] : [c.certificateNotice, c.certificateEligibility]), c.defaultNarrative, c.offer?.title, c.offer?.ctaText];
   if (requiredStrings.some(v => typeof v !== 'string' || !v.trim() || v.length > 2000) || typeof c.active !== 'boolean' || !Number.isFinite(c.baseScore) || c.baseScore < 0 || c.baseScore > 100) throw new HttpError(400, 'Lengkapi judul, batch, informasi sertifikat, dan penawaran.');
   if (!Array.isArray(c.sections) || c.sections.length !== 5 || new Set(c.sections.map(s => s.kind)).size !== 5 || c.sections.some(s => !['profile','feedback','recap','assessment','preferences'].includes(s.kind))) throw new HttpError(400, 'Pertahankan lima jenis section PM.');
